@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz da Copa do Mundo 2026 - Com Som!</title>
+    <style>
+        :root {
+            --primary-color: #006633;
+            --secondary-color: #cc9900;
+            --background-color: #f4f4f9;
+            --card-color: #ffffff;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: var(--card-color);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-top: 8px solid var(--primary-color);
+            position: relative;
+        }
+
+        .audio-control {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #eee;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+
+        h2 {
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background: #eee;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .flag-container {
+            margin: 20px 0;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flag-img {
+            max-height: 100%;
+            max-width: 250px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .instruction {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 480px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-option {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .btn-option:hover:not(:disabled) {
+            border-color: var(--primary-color);
+            background-color: #f0f7f4;
+            transform: translateY(-2px);
+        }
+
+        .btn-option:disabled {
+            cursor: not-allowed;
+        }
+
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724 !important;
+        }
+
+        .wrong {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24 !important;
+        }
+
+        .feedback {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            min-height: 27px;
+        }
+
+        .btn-next {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            margin: 0 auto;
+            transition: background 0.2s;
+        }
+
+        .btn-next:hover {
+            background-color: #b38600;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .restart-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop src="abertura_copa_2026.mp3"></audio>
+    <audio id="sound-correct" src="dragon-studio-correct-472358.mp3"></audio>
+    <audio id="sound-wrong" src="eritnhut1992-buzzer-or-wrong-answer-20582.mp3"></audio>
+
+    <div class="container">
+        <button id="mute-btn" class="audio-control" onclick="toggleMute()">🔊 Som Ligado</button>
+
+        <div id="start-screen" class="screen active">
+            <h1>Quiz da Copa do Mundo 2026</h1>
+            <h2>Bandeiras & Capitais (48 Seleções)</h2>
+            <p>Você enfrentará uma rodada dinâmica com 10 países sorteados. Teste seus conhecimentos com som e torcida!</p>
+            <button class="restart-btn" onclick="startGame()">Começar Jogo</button>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div class="status-bar">
+                <span id="score-display">Pontos: 0</span>
+                <span id="progress-display">País: 1/10</span>
+            </div>
+
+            <div class="flag-container">
+                <img id="flag-image" src="" alt="Bandeira do País" class="flag-img">
+            </div>
+
+            <div id="game-instruction" class="instruction">Qual é este país?</div>
+
+            <div class="options-grid" id="options-container">
+                </div>
+
+            <div id="feedback-message" class="feedback"></div>
+            <button id="next-btn" class="btn-next" onclick="handleNextStep()">Avançar</button>
+        </div>
+
+        <div id="end-screen" class="screen">
+            <h1>Fim de Jogo!</h1>
+            <h2>Veja o seu desempenho no Quiz</h2>
+            <div style="font-size: 24px; margin: 20px 0; font-weight: bold;" id="final-score">
+                Você fez 0 pontos de um máximo de 20!
+            </div>
+            <p id="final-evaluation"></p>
+            <button class="restart-btn" onclick="startGame()">Jogar Novamente</button>
+        </div>
+    </div>
+
+    <script>
+        // Banco de dados completo com os 48 países
+        const poolCountries = [
+            { name: "Canadá", capital: "Ottawa", code: "ca" },
+            { name: "Estados Unidos", capital: "Washington", code: "us" },
+            { name: "México", capital: "Cidade do México", code: "mx" },
+            { name: "Argentina", capital: "Buenos Aires", code: "ar" },
+            { name: "Brasil", capital: "Brasília", code: "br" },
+            { name: "Colômbia", capital: "Bogotá", code: "co" },
+            { name: "Equador", capital: "Quito", code: "ec" },
+            { name: "Paraguai", capital: "Assunção", code: "py" },
+            { name: "Uruguai", capital: "Montevidéu", code: "uy" },
+            { name: "Alemanha", capital: "Berlim", code: "de" },
+            { name: "Áustria", capital: "Viena", code: "at" },
+            { name: "Bélgica", capital: "Bruxelas", code: "be" },
+            { name: "Bósnia e Herzegovina", capital: "Sarajevo", code: "ba" },
+            { name: "Croácia", capital: "Zagreb", code: "hr" },
+            { name: "Escócia", capital: "Edimburgo", code: "gb-sct" },
+            { name: "Espanha", capital: "Madri", code: "es" },
+            { name: "França", capital: "Paris", code: "fr" },
+            { name: "Holanda", capital: "Amsterdã", code: "nl" },
+            { name: "Inglaterra", capital: "Londres", code: "gb-eng" },
+            { name: "Noruega", capital: "Oslo", code: "no" },
+            { name: "Portugal", capital: "Lisboa", code: "pt" },
+            { name: "República Tcheca", capital: "Praga", code: "cz" },
+            { name: "Suécia", capital: "Estocolmo", code: "se" },
+            { name: "Suíça", capital: "Berna", code: "ch" },
+            { name: "Turquia", capital: "Ancara", code: "tr" },
+            { name: "África do Sul", capital: "Pretória", code: "za" },
+            { name: "Argélia", capital: "Argel", code: "dz" },
+            { name: "Cabo Verde", capital: "Praia", code: "cv" },
+            { name: "Costa do Marfim", capital: "Yamoussoukro", code: "ci" },
+            { name: "Egito", capital: "Cairo", code: "eg" },
+            { name: "Gana", capital: "Acra", code: "gh" },
+            { name: "Marrocos", capital: "Rabat", code: "ma" },
+            { name: "República Democrática do Congo", capital: "Kinshasa", code: "cd" },
+            { name: "Senegal", capital: "Dakar", code: "sn" },
+            { name: "Tunísia", capital: "Túnis", code: "tn" },
+            { name: "Arábia Saudita", capital: "Riad", code: "sa" },
+            { name: "Austrália", capital: "Camberra", code: "au" },
+            { name: "Catar", capital: "Doha", code: "qa" },
+            { name: "Coreia do Sul", capital: "Seul", code: "kr" },
+            { name: "Irã", capital: "Teerã", code: "ir" },
+            { name: "Iraque", capital: "Bagdá", code: "iq" },
+            { name: "Japão", capital: "Tóquio", code: "jp" },
+            { name: "Jordânia", capital: "Amã", code: "jo" },
+            { name: "Uzbequistão", capital: "Tashkent", code: "uz" },
+            { name: "Curaçau", capital: "Willemstad", code: "cw" },
+            { name: "Haiti", capital: "Porto Príncipe", code: "ht" },
+            { name: "Panamá", capital: "Cidade do Panamá", code: "pa" },
+            { name: "Nova Zelândia", capital: "Wellington", code: "nz" }
+        ];
+
+        let gameCountries = [];
+        let currentCountryIndex = 0;
+        let currentStep = "country"; 
+        let score = 0;
+        let isMuted = false;
+        const totalRoundCountries = 10; 
+
+        // Captura elementos de áudio
+        const bgMusic = document.getElementById('bg-music');
+        const soundCorrect = document.getElementById('sound-correct');
+        const soundWrong = document.getElementById('sound-wrong');
+
+        // Configura volumes iniciais para não ficarem estourados
+        bgMusic.volume = 0.3;
+        soundCorrect.volume = 0.5;
+        soundWrong.volume = 0.5;
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            bgMusic.muted = isMuted;
+            soundCorrect.muted = isMuted;
+            soundWrong.muted = isMuted;
+            
+            document.getElementById('mute-btn').textContent = isMuted ? "🔇 Mudo" : "🔊 Som Ligado";
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startGame() {
+            // Toca a música de fundo (Disparada pela ação de clique do usuário)
+            if (!isMuted) {
+                bgMusic.play().catch(e => console.log("Áudio bloqueado temporariamente:", e));
+            }
+
+            gameCountries = shuffle([...poolCountries]).slice(0, totalRoundCountries);
+            currentCountryIndex = 0;
+            score = 0;
+            currentStep = "country";
+            
+            updateScoreDisplay();
+            setupCurrentRound();
+            showScreen('game-screen');
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('score-display').textContent = `Pontos: ${score}`;
+            document.getElementById('progress-display').textContent = `País: ${currentCountryIndex + 1}/${gameCountries.length}`;
+        }
+
+        function setupCurrentRound() {
+            const currentCountry = gameCountries[currentCountryIndex];
+            const flagImg = document.getElementById('flag-image');
+            
+            flagImg.src = `https://flagcdn.com/w320/${currentCountry.code}.png`;
+            
+            document.getElementById('feedback-message').textContent = "";
+            document.getElementById('feedback-message').className = "feedback";
+            document.getElementById('next-btn').style.display = "none";
+
+            if (currentStep === "country") {
+                document.getElementById('game-instruction').textContent = "Qual é este país?";
+                generateOptions("name");
+            } else {
+                document.getElementById('game-instruction').textContent = `Qual é a capital de: ${currentCountry.name}?`;
+                generateOptions("capital");
+            }
+        }
+
+        function generateOptions(type) {
+            const currentCountry = gameCountries[currentCountryIndex];
+            const correctAnswer = currentCountry[type];
+            
+            let wrongAnswers = poolCountries
+                .filter(c => c[type] !== correctAnswer)
+                .map(c => c[type]);
+            
+            wrongAnswers = shuffle(wrongAnswers).slice(0, 3);
+            let finalOptions = shuffle([correctAnswer, ...wrongAnswers]);
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+            
+            finalOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(btn, opt, correctAnswer);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedButton, selectedValue, correctAnswer) {
+            const buttons = document.querySelectorAll('.btn-option');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            const feedbackEl = document.getElementById('feedback-message');
+            
+            if (selectedValue === correctAnswer) {
+                selectedButton.classList.add('correct');
+                feedbackEl.textContent = "Resposta Correta! ⚽";
+                feedbackEl.classList.add('correct');
+                
+                // Toca som de acerto (reseta o tempo para permitir cliques rápidos)
+                soundCorrect.currentTime = 0;
+                soundCorrect.play();
+
+                score++;
+                updateScoreDisplay();
+            } else {
+                selectedButton.classList.add('wrong');
+                feedbackEl.textContent = `Incorreto! A resposta certa era: ${correctAnswer}`;
+                feedbackEl.classList.add('wrong');
+                
+                // Toca som de erro
+                soundWrong.currentTime = 0;
+                soundWrong.play();
+
+                buttons.forEach(btn => {
+                    if (btn.textContent === correctAnswer) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+            
+            document.getElementById('next-btn').style.display = "block";
+        }
+
+        function handleNextStep() {
+            if (currentStep === "country") {
+                currentStep = "capital";
+                setupCurrentRound();
+            } else {
+                currentCountryIndex++;
+                if (currentCountryIndex < gameCountries.length) {
+                    currentStep = "country";
+                    updateScoreDisplay();
+                    setupCurrentRound();
+                } else {
+                    endGame();
+                }
+            }
+        }
+
+        function endGame() {
+            // Pausa a música de fundo no final
+            bgMusic.pause();
+
+            const maxPoints = gameCountries.length * 2;
+            document.getElementById('final-score').textContent = `Você fez ${score} de ${maxPoints} pontos possíveis!`;
+            
+            let evalMessage = "";
+            if (score === maxPoints) {
+                evalMessage = "Incrível! Você tem nível de campeão mundial! 🏆";
+            } else if (score >= maxPoints * 0.7) {
+                evalMessage = "Ótimo desempenho! Passou com folga da fase de grupos! 🥈";
+            } else if (score >= maxPoints * 0.4) {
+                evalMessage = "Desempenho mediano, quase beliscou uma vaga no mata-mata. 🥉";
+            } else {
+                evalMessage = "Faltou ritmo de jogo! Que tal tentar mais uma vez para treinar?";
+            }
+            
+            document.getElementById('final-evaluation').textContent = evalMessage;
+            showScreen('end-screen');
+        }
+    </script>
+</body>
+</html>
