@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedradas do Inaldo - Music Player</title>
+  <style>
+    :root {
+      --bg-color: #0f1115;
+      --card-bg: #1c1f26;
+      --primary: #e07a38;
+      --primary-hover: #f08b49;
+      --accent: #d45d28;
+      --text: #ffffff;
+      --text-muted: #9da5b4;
+      --border: rgba(224, 122, 56, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      background-image: radial-gradient(circle at center, rgba(224, 122, 56, 0.08) 0%, transparent 70%);
+    }
+
+    .player-container {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 440px;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-img {
+      width: 250px;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      box-shadow: 0 8px 24px rgba(224, 122, 56, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .logo-img:hover {
+      transform: scale(1.03);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      color: var(--primary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .badge-friday {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 16px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.85rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px rgba(212, 93, 40, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.85; transform: scale(0.98); }
+      50% { opacity: 1; transform: scale(1.03); }
+      100% { opacity: 0.85; transform: scale(0.98); }
+    }
+
+    .track-info {
+      text-align: center;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .track-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .track-artist {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    audio {
+      width: 100%;
+      margin-bottom: 24px;
+      outline: none;
+      border-radius: 8px;
+    }
+
+    audio::-webkit-media-controls-panel {
+      background-color: #2a2e38;
+    }
+
+    .playlist-container {
+      width: 100%;
+    }
+
+    .playlist-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .playlist {
+      list-style: none;
+      max-height: 180px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .playlist::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .playlist::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    .playlist li {
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+
+    .playlist li:hover {
+      background-color: rgba(255, 255, 255, 0.07);
+      transform: translateX(2px);
+    }
+
+    .playlist li.active {
+      background-color: rgba(224, 122, 56, 0.15);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .playlist li .track-number {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-right: 12px;
+    }
+
+    /* --- LINHAS ADICIONADAS: Estilos do Banner de Contagem Regressiva --- */
+    .countdown-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 17, 21, 0.94);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .countdown-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .countdown-card {
+      background: var(--card-bg);
+      border: 2px solid var(--primary);
+      padding: 32px 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 12px 36px rgba(224, 122, 56, 0.4);
+      animation: pulse 1.5s infinite;
+      max-width: 90%;
+    }
+
+    .countdown-text {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .countdown-number {
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--primary);
+      text-shadow: 0 0 20px rgba(224, 122, 56, 0.8);
+      display: inline-block;
+      margin-left: 6px;
+      animation: pop 0.4s ease;
+    }
+
+    /* --- LINHAS ADICIONADAS: Botão para autorizar Autoplay de áudio --- */
+    .start-btn {
+      margin-top: 18px;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(224, 122, 56, 0.5);
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .start-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(224, 122, 56, 0.8);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.4); opacity: 0; }
+      80% { transform: scale(1.25); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* --- LINHAS ADICIONADAS: Estilos dos Botões de Navegação e WhatsApp --- */
+    .controls-container {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      width: 100%;
+    }
+
+    .ctrl-btn {
+      background: #2a2e38;
+      color: var(--primary);
+      border: 1px solid var(--border);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .ctrl-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      transform: scale(1.08);
+      box-shadow: 0 4px 15px rgba(224, 122, 56, 0.5);
+    }
+
+    .whatsapp-btn {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      background-color: #25d366;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    }
+
+    .whatsapp-btn:hover {
+      background-color: #20ba5a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- --- LINHA ADICIONADA: Banner de Contagem Regressiva --- -->
+  <!--div id="countdown-overlay" class="countdown-overlay">
+    <div class="countdown-card">
+      <div class="countdown-text">
+        Segura essa <br>pedrada em <br><span id="countdown-num" class="countdown-number">3</span>
+      </div>
+    </div>
+  </div-->
+  <div id="countdown-overlay" class="countdown-overlay">
+    <div class="countdown-card">
+      <div id="countdown-content" class="countdown-text">
+        Preparado para #Sextar?<br>
+        <button id="start-btn" class="start-btn">🔥 Soltar a Pedrada 🔥</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="player-container">
+    <!-- Logo do Pedradas do Inaldo -->
+    <div class="logo-container">
+      <img src="logo_inaldo.jpg" alt="Logo Pedradas do Inaldo" class="logo-img">
+    </div>
+
+    <div class="header">
+      <h1>Pedradas do Inaldo</h1>
+      <div id="friday-tag" style="display: none;" class="badge-friday">
+        🔥 Pedrada de Sexta
+      </div>
+    </div>
+
+    <div class="track-info">
+      <div id="current-title" class="track-title">Carregando...</div>
+      <div id="current-artist" class="track-artist">Pedradas do Inaldo</div>
+    </div>
+
+    <audio id="audio-player" controls preload="metadata"></audio>
+
+    <!-- --- LINHAS ADICIONADAS: Botões de Navegação (Anterior e Próxima) --- -->
+    <div class="controls-container">
+      <button id="prev-btn" class="ctrl-btn" title="Música Anterior">⏮</button>
+      <button id="next-btn" class="ctrl-btn" title="Próxima Música">⏭</button>
+    </div>
+
+    <!-- --- LINHAS ADICIONADAS: Botão de Compartilhar no WhatsApp --- -->
+    <button id="share-whatsapp-btn" class="whatsapp-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+      </svg>
+      Compartilhar no WhatsApp
+    </button>
+
+
+    <div class="playlist-container">
+      <div class="playlist-title">Músicas Disponíveis</div>
+      <ul id="playlist" class="playlist"></ul>
+    </div>
+  </div>
+
+  <script>
+    // Lista de músicas - adicione os arquivos mp3 que estão na mesma pasta
+    const playlist = [
+      { title: "Pedrada Especial de Sexta", file: "mp3/WhatsApp Audio 2026-08-14 at 06.49.18.mpeg", isFridayTrack: true },
+      { title: "Música do Inaldo 01", file: "mp3/WhatsApp Audio 2026-08-07 at 06.24.51.mpeg", isFridayTrack: false },
+      { title: "Música do Inaldo 02", file: "mp3/WhatsApp Audio 2026-07-31 at 07.42.44.mpeg", isFridayTrack: false },
+      { title: "Música do Inaldo 03", file: "mp3/WhatsApp Audio 2026-07-24 at 08.58.58.mpeg", isFridayTrack: false },
+      { title: "Música do Inaldo 03", file: "mp3/WhatsApp Audio 2026-07-17 at 06.44.51.mpeg", isFridayTrack: false }
+    ];
+
+    // --- LINHAS ADICIONADAS: Referências dos novos elementos ---
+    let currentTrackIndex = 0;
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const shareWhatsappBtn = document.getElementById('share-whatsapp-btn');
+
+    const audioPlayer = document.getElementById('audio-player');
+    const currentTitle = document.getElementById('current-title');
+    const playlistElement = document.getElementById('playlist');
+    const fridayTag = document.getElementById('friday-tag');
+
+    // Verifica se hoje é Sexta-feira (5 = Sexta-feira no getDay)
+    const today = new Date();
+    const isFriday = today.getDay() === 5;
+
+    function renderPlaylist() {
+      playlistElement.innerHTML = '';
+
+      playlist.forEach((track, index) => {
+        const li = document.createElement('li');
+        
+        const spanNum = document.createElement('span');
+        spanNum.className = 'track-number';
+        spanNum.textContent = String(index + 1).padStart(2, '0');
+
+        const spanTitle = document.createElement('span');
+        spanTitle.textContent = track.title;
+
+        li.appendChild(spanNum);
+        li.appendChild(spanTitle);
+
+        li.addEventListener('click', () => loadTrack(index));
+        playlistElement.appendChild(li);
+      });
+    }
+
+    function loadTrack(index) {
+      currentTrackIndex = index; // --- LINHA ADICIONADA/CORRIGIDA: Atualiza a faixa atual ---
+      const track = playlist[index];
+      audioPlayer.src = track.file;
+      currentTitle.textContent = track.title;
+
+      const items = playlistElement.querySelectorAll('li');
+      items.forEach((item, idx) => {
+        if (idx === index) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+    }
+
+    // --- LINHAS ADICIONADAS: Funções dos botões Anterior, Próxima e Compartilhar ---
+    function playNextTrack() {
+      const nextIndex = (currentTrackIndex + 1) % playlist.length;
+      loadTrack(nextIndex);
+      audioPlayer.play().catch(e => console.log("Erro ao tocar próxima:", e));
+    }
+
+    function playPrevTrack() {
+      const prevIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+      loadTrack(prevIndex);
+      audioPlayer.play().catch(e => console.log("Erro ao tocar anterior:", e));
+    }
+
+    function shareOnWhatsApp() {
+      const currentTrack = playlist[currentTrackIndex] ? playlist[currentTrackIndex].title : "Pedradas do Inaldo";
+      const text = `🔥 Ouve essa pedrada! Tô escutando "${currentTrack}" nas Pedradas do Inaldo!`;
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + '\n' + window.location.href)}`;
+      window.open(url, '_blank');
+    }
+
+    // Event Listeners dos novos controles
+    if (prevBtn) prevBtn.addEventListener('click', playPrevTrack);
+    if (nextBtn) nextBtn.addEventListener('click', playNextTrack);
+    if (shareWhatsappBtn) shareWhatsappBtn.addEventListener('click', shareOnWhatsApp);
+
+    // Toca a próxima música automaticamente quando a atual termina
+    audioPlayer.addEventListener('ended', playNextTrack);
+
+    // Inicialização
+    renderPlaylist();
+
+    if (isFriday) {
+      fridayTag.style.display = 'inline-block';
+      const fridayIndex = playlist.findIndex(t => t.isFridayTrack);
+      loadTrack(fridayIndex !== -1 ? fridayIndex : 0);
+    } else {
+      fridayTag.style.display = 'none';
+      loadTrack(0);
+    }
+
+    // --- LINHAS MODIFICADAS: Lógica da Contagem Regressiva e Autoplay Seguro ---
+    let countdownValue = 3;
+    const countdownOverlay = document.getElementById('countdown-overlay');
+    const countdownContent = document.getElementById('countdown-content');
+    const startBtn = document.getElementById('start-btn');
+
+    function startCountdown() {
+      // 1. Destrava/Autoriza a reprodução de áudio no navegador através do gesto do usuário
+      audioPlayer.play().then(() => {
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0;
+      }).catch(err => console.log("Aviso de inicialização de áudio:", err));
+
+      // 2. Transiciona para a contagem regressiva
+      countdownContent.innerHTML = 'Segura essa <br>pedrada em <br><span id="countdown-num" class="countdown-number">3</span>';
+      const countdownNumEl = document.getElementById('countdown-num');
+
+      // 3. Executa o contador de 3 segundos
+      const interval = setInterval(() => {
+        countdownValue--;
+        if (countdownValue > 0) {
+          countdownNumEl.textContent = countdownValue;
+          countdownNumEl.style.animation = 'none';
+          void countdownNumEl.offsetWidth; // Força reflow no navegador
+          countdownNumEl.style.animation = 'pop 0.4s ease';
+        } else {
+          clearInterval(interval);
+          countdownOverlay.classList.add('hidden');
+          
+          // Toca a música com autorização concedida
+          audioPlayer.play().catch(error => {
+            console.log("Erro ao iniciar a música:", error);
+          });
+        }
+      }, 1000);
+    }
+
+    // Ouve o clique do usuário para acionar a reprodução
+    if (startBtn) {
+      startBtn.addEventListener('click', startCountdown);
+    }
+  </script>
+</body>
+</html>
