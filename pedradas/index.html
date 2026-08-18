@@ -303,6 +303,12 @@
       box-shadow: 0 4px 15px rgba(224, 122, 56, 0.5);
     }
 
+    .play-pause-btn {
+      width: 56px;
+      height: 56px;
+      font-size: 1.4rem;
+    }
+
     .whatsapp-btn {
       width: 100%;
       padding: 12px;
@@ -371,6 +377,7 @@
     <!-- --- LINHAS ADICIONADAS: Botões de Navegação (Anterior e Próxima) --- -->
     <div class="controls-container">
       <button id="prev-btn" class="ctrl-btn" title="Música Anterior">⏮</button>
+      <button id="play-pause-btn" class="ctrl-btn play-pause-btn" title="Reproduzir" aria-label="Reproduzir">▶</button>
       <button id="next-btn" class="ctrl-btn" title="Próxima Música">⏭</button>
     </div>
 
@@ -389,19 +396,44 @@
     </div>
   </div>
 
+  <script id="playlist-data" type="application/json">
+    [
+      {
+        "title": "Pedrada Especial de Sexta",
+        "file": "mp3/WhatsApp Audio 2026-08-14 at 06.49.18.mpeg",
+        "isFridayTrack": true
+      },
+      {
+        "title": "Música do Inaldo 01",
+        "file": "mp3/WhatsApp Audio 2026-08-07 at 06.24.51.mpeg",
+        "isFridayTrack": false
+      },
+      {
+        "title": "Música do Inaldo 02",
+        "file": "mp3/WhatsApp Audio 2026-07-31 at 07.42.44.mpeg",
+        "isFridayTrack": false
+      },
+      {
+        "title": "Música do Inaldo 03",
+        "file": "mp3/WhatsApp Audio 2026-07-24 at 08.58.58.mpeg",
+        "isFridayTrack": false
+      },
+      {
+        "title": "Música do Inaldo 04",
+        "file": "mp3/WhatsApp Audio 2026-07-17 at 06.44.51.mpeg",
+        "isFridayTrack": false
+      }
+    ]
+  </script>
+
   <script>
-    // Lista de músicas - adicione os arquivos mp3 que estão na mesma pasta
-    const playlist = [
-      { title: "Pedrada Especial de Sexta", file: "mp3/WhatsApp Audio 2026-08-14 at 06.49.18.mpeg", isFridayTrack: true },
-      { title: "Música do Inaldo 01", file: "mp3/WhatsApp Audio 2026-08-07 at 06.24.51.mpeg", isFridayTrack: false },
-      { title: "Música do Inaldo 02", file: "mp3/WhatsApp Audio 2026-07-31 at 07.42.44.mpeg", isFridayTrack: false },
-      { title: "Música do Inaldo 03", file: "mp3/WhatsApp Audio 2026-07-24 at 08.58.58.mpeg", isFridayTrack: false },
-      { title: "Música do Inaldo 03", file: "mp3/WhatsApp Audio 2026-07-17 at 06.44.51.mpeg", isFridayTrack: false }
-    ];
+    const playlistData = document.getElementById('playlist-data');
+    let playlist = JSON.parse(playlistData.textContent);
 
     // --- LINHAS ADICIONADAS: Referências dos novos elementos ---
     let currentTrackIndex = 0;
     const prevBtn = document.getElementById('prev-btn');
+    const playPauseBtn = document.getElementById('play-pause-btn');
     const nextBtn = document.getElementById('next-btn');
     const shareWhatsappBtn = document.getElementById('share-whatsapp-btn');
 
@@ -436,6 +468,8 @@
     }
 
     function loadTrack(index) {
+      if (!playlist[index]) return;
+
       currentTrackIndex = index; // --- LINHA ADICIONADA/CORRIGIDA: Atualiza a faixa atual ---
       const track = playlist[index];
       audioPlayer.src = track.file;
@@ -453,15 +487,36 @@
 
     // --- LINHAS ADICIONADAS: Funções dos botões Anterior, Próxima e Compartilhar ---
     function playNextTrack() {
+      if (!playlist.length) return;
+
       const nextIndex = (currentTrackIndex + 1) % playlist.length;
       loadTrack(nextIndex);
       audioPlayer.play().catch(e => console.log("Erro ao tocar próxima:", e));
     }
 
     function playPrevTrack() {
+      if (!playlist.length) return;
+
       const prevIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
       loadTrack(prevIndex);
       audioPlayer.play().catch(e => console.log("Erro ao tocar anterior:", e));
+    }
+
+    function togglePlayPause() {
+      if (!playlist.length) return;
+
+      if (audioPlayer.paused) {
+        audioPlayer.play().catch(e => console.log("Erro ao reproduzir:", e));
+      } else {
+        audioPlayer.pause();
+      }
+    }
+
+    function updatePlayPauseButton() {
+      const isPaused = audioPlayer.paused;
+      playPauseBtn.textContent = isPaused ? '▶' : '⏸';
+      playPauseBtn.title = isPaused ? 'Reproduzir' : 'Pausar';
+      playPauseBtn.setAttribute('aria-label', isPaused ? 'Reproduzir' : 'Pausar');
     }
 
     function shareOnWhatsApp() {
@@ -473,23 +528,35 @@
 
     // Event Listeners dos novos controles
     if (prevBtn) prevBtn.addEventListener('click', playPrevTrack);
+    if (playPauseBtn) playPauseBtn.addEventListener('click', togglePlayPause);
     if (nextBtn) nextBtn.addEventListener('click', playNextTrack);
     if (shareWhatsappBtn) shareWhatsappBtn.addEventListener('click', shareOnWhatsApp);
+    audioPlayer.addEventListener('play', updatePlayPauseButton);
+    audioPlayer.addEventListener('pause', updatePlayPauseButton);
 
     // Toca a próxima música automaticamente quando a atual termina
     audioPlayer.addEventListener('ended', playNextTrack);
 
-    // Inicialização
-    renderPlaylist();
+    function loadPlaylist() {
+      playlist = playlist.filter(track => track && track.title && track.file);
+      renderPlaylist();
 
-    if (isFriday) {
-      fridayTag.style.display = 'inline-block';
-      const fridayIndex = playlist.findIndex(t => t.isFridayTrack);
-      loadTrack(fridayIndex !== -1 ? fridayIndex : 0);
-    } else {
-      fridayTag.style.display = 'none';
-      loadTrack(0);
+      if (!playlist.length) {
+        currentTitle.textContent = 'Nenhuma música encontrada';
+        return;
+      }
+
+      if (isFriday) {
+        fridayTag.style.display = 'inline-block';
+        const fridayIndex = playlist.findIndex(track => track.isFridayTrack);
+        loadTrack(fridayIndex !== -1 ? fridayIndex : 0);
+      } else {
+        fridayTag.style.display = 'none';
+        loadTrack(0);
+      }
     }
+
+    loadPlaylist();
 
     // --- LINHAS MODIFICADAS: Lógica da Contagem Regressiva e Autoplay Seguro ---
     let countdownValue = 3;
