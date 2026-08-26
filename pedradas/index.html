@@ -142,6 +142,46 @@
       background-color: #2a2e38;
     }
 
+    .volume-control {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: -12px;
+      margin-bottom: 20px;
+    }
+
+    .volume-btn {
+      flex: 0 0 36px;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: #2a2e38;
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .volume-btn:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .volume-slider {
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .volume-value {
+      min-width: 42px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-align: right;
+    }
+
     .playlist-container {
       width: 100%;
     }
@@ -384,6 +424,12 @@
 
     <audio id="audio-player" controls preload="metadata"></audio>
 
+    <div class="volume-control" aria-label="Controle de volume">
+      <button id="volume-btn" class="volume-btn" type="button" title="Silenciar" aria-label="Silenciar">🔊</button>
+      <input id="volume-slider" class="volume-slider" type="range" min="0" max="100" value="100" aria-label="Volume">
+      <span id="volume-value" class="volume-value">100%</span>
+    </div>
+
     <!-- --- LINHAS ADICIONADAS: Botões de Navegação (Anterior e Próxima) --- -->
     <div class="controls-container">
       <button id="prev-btn" class="ctrl-btn" title="Música Anterior">⏮</button>
@@ -453,6 +499,9 @@
     const playPauseBtn = document.getElementById('play-pause-btn');
     const nextBtn = document.getElementById('next-btn');
     const shareWhatsappBtn = document.getElementById('share-whatsapp-btn');
+    const volumeBtn = document.getElementById('volume-btn');
+    const volumeSlider = document.getElementById('volume-slider');
+    const volumeValue = document.getElementById('volume-value');
 
     const audioPlayer = document.getElementById('audio-player');
     const currentTitle = document.getElementById('current-title');
@@ -536,6 +585,26 @@
       playPauseBtn.setAttribute('aria-label', isPaused ? 'Reproduzir' : 'Pausar');
     }
 
+    function updateVolumeControl() {
+      const volumePercent = Math.round(audioPlayer.volume * 100);
+      volumeSlider.value = volumePercent;
+      volumeValue.textContent = `${volumePercent}%`;
+      volumeBtn.textContent = audioPlayer.muted || volumePercent === 0 ? '🔇' : '🔊';
+      volumeBtn.title = audioPlayer.muted || volumePercent === 0 ? 'Ativar som' : 'Silenciar';
+      volumeBtn.setAttribute('aria-label', volumeBtn.title);
+    }
+
+    function setVolume() {
+      audioPlayer.volume = Number(volumeSlider.value) / 100;
+      audioPlayer.muted = audioPlayer.volume === 0;
+      updateVolumeControl();
+    }
+
+    function toggleMute() {
+      audioPlayer.muted = !audioPlayer.muted;
+      updateVolumeControl();
+    }
+
     function shareOnWhatsApp() {
       const currentTrack = playlist[currentTrackIndex] ? playlist[currentTrackIndex].title : "Pedradas do Inaldo";
       const text = `🔥 Ouve essa pedrada! Tô escutando "${currentTrack}" nas Pedradas do Inaldo!`;
@@ -548,6 +617,8 @@
     if (playPauseBtn) playPauseBtn.addEventListener('click', togglePlayPause);
     if (nextBtn) nextBtn.addEventListener('click', playNextTrack);
     if (shareWhatsappBtn) shareWhatsappBtn.addEventListener('click', shareOnWhatsApp);
+    if (volumeSlider) volumeSlider.addEventListener('input', setVolume);
+    if (volumeBtn) volumeBtn.addEventListener('click', toggleMute);
     audioPlayer.addEventListener('play', updatePlayPauseButton);
     audioPlayer.addEventListener('pause', updatePlayPauseButton);
 
@@ -574,6 +645,7 @@
     }
 
     loadPlaylist();
+    updateVolumeControl();
 
     // --- LINHAS MODIFICADAS: Lógica da Contagem Regressiva e Autoplay Seguro ---
     let countdownValue = 3;
