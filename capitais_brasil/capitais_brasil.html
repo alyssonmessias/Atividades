@@ -212,7 +212,7 @@
 <body>
 
     <!-- Elementos de Áudio -->
-    <audio id="bg-music" loop src="https://assets.mixkit.co/music/preview/mixkit-games-worldbeat-466.mp3"></audio>
+    <audio id="bg-music" preload="auto"></audio>
     <audio id="sound-correct" src="dragon-studio-correct-472358.mp3"></audio>
     <audio id="sound-wrong" src="eritnhut1992-buzzer-or-wrong-answer-20582.mp3"></audio>
 
@@ -241,6 +241,8 @@
             </div>
 
             <div id="state-title" class="state-header">Nome do Estado</div>
+
+            <div id="regional-music" class="instruction">Música regional</div>
 
             <div class="flag-container">
                 <img id="flag-image" src="" alt="Bandeira do Estado" class="flag-img">
@@ -308,6 +310,36 @@
             { name: "Santa Catarina", capital: "Florianópolis", region: "Sul", code: "br-sc" }
         ];
 
+        const regionalMusic = {
+            ac: { title: "Xote do Xixuá", artist: "Antônio Pedro", file: "musicas/AC.mp3" },
+            ap: { title: "Jeito Tucuju", artist: "Val Milhomem e Joãozinho Gomes", file: "musicas/AP.mp3" },
+            am: { title: "Vermelho", artist: "David Assayag / Boi Garantido", file: "musicas/AM.mp3" },
+            pa: { title: "Voando pro Pará", artist: "Banda Calypso", file: "musicas/PA.mp3" },
+            ro: { title: "Céu de Rondônia", artist: "Cláudio dos Santos", file: "musicas/RO.mp3" },
+            rr: { title: "Makunaimando", artist: "Eliakin Rufino", file: "musicas/RR.mp3" },
+            to: { title: "Passarim do Jalapão", artist: "Genésio Tocantins", file: "musicas/TO.mp3" },
+            al: { title: "Minha Sereia", artist: "Carlos Moura", file: "musicas/AL.mp3" },
+            ba: { title: "Faraó", artist: "Margareth Menezes ", file: "musicas/BA.mp3" },
+            ce: { title: "Sabiá", artist: "Luiz Gonzaga", file: "musicas/CE.mp3" },
+            ma: { title: "Regueiros guerreiros", artist: "Tribo de Jah", file: "musicas/MA.mp3" },
+            pb: { title: "Olha pro Céu", artist: "Trio de onde vem o Baião", file: "musicas/PB.mp3" },
+            pe: { title: "Vassourinhas", artist: "Maestro Spok no Jazz Sinfônica Brasil", file: "musicas/PE.mp3" },
+            pi: { title: "Forró Porreta", artist: "Lázaro do Piauí", file: "musicas/PI.mp3" },
+            rn: { title: "Forró do Xenhenhém", artist: "Feat. Alcione - Forróçacana", file: "musicas/RN.mp3" },
+            se: { title: "Telegrama", artist: "Zeca Baleiro", file: "musicas/SE.mp3" },
+            df: { title: "Tempo Perdido", artist: "Legião Urbana", file: "musicas/DF.mp3" },
+            go: { title: "Saudade da Minha Terra", artist: "Chitãozinho & Xororó", file: "musicas/GO.mp3" },
+            mt: { title: "É Bem Mato Grosso", artist: "Henrique e Diego", file: "musicas/MT.mp3" },
+            ms: { title: "Trem do Pantanal", artist: "Almir Sater", file: "musicas/MS.mp3" },
+            es: { title: "Congo Capixaba", artist: "Banda Casaca", file: "musicas/ES.mp3" },
+            mg: { title: "Clube da Esquina No. 2", artist: "Milton Nascimento", file: "musicas/MG.mp3" },
+            rj: { title: "Aquele Abraço", artist: "Gilberto Gil", file: "musicas/RJ.mp3" },
+            sp: { title: "Trem das Onze", artist: "Adoniran Barbosa", file: "musicas/SP.mp3" },
+            pr: { title: "Fandango no Paraná", artist: "Dueto de Sanfona", file: "musicas/PR.mp3" },
+            rs: { title: "Canto Alegretense", artist: "Neto Fagundes", file: "musicas/RS.mp3" },
+            sc: { title: "Rancho de Amor à Ilha", artist: "Zininho", file: "musicas/SC.mp3" }
+        };
+
         let gameStates = [];
         let currentStateIndex = 0;
         let currentStep = "region"; // "region" ou "capital"
@@ -319,6 +351,7 @@
         const bgMusic = document.getElementById('bg-music');
         const soundCorrect = document.getElementById('sound-correct');
         const soundWrong = document.getElementById('sound-wrong');
+        const regionalMusicElement = document.getElementById('regional-music');
 
         bgMusic.volume = 0.25;
         soundCorrect.volume = 0.5;
@@ -347,10 +380,6 @@
         }
 
         function startGame() {
-            if (!isMuted) {
-                bgMusic.play().catch(e => console.log("Música iniciada após interação:", e));
-            }
-
             gameStates = shuffle([...poolStates]).slice(0, totalRoundStates);
             currentStateIndex = 0;
             score = 0;
@@ -366,15 +395,29 @@
             document.getElementById('progress-display').textContent = `Estado: ${currentStateIndex + 1}/${gameStates.length}`;
         }
 
-        function setupCurrentRound() {
+        function setupCurrentRound(changeMusic = true) {
             const currentState = gameStates[currentStateIndex];
+            const stateCode = currentState.code.replace('br-', '').toLowerCase();
+            const music = regionalMusic[stateCode];
             
             document.getElementById('state-title').textContent = currentState.name;
+
+            regionalMusicElement.textContent = music
+                ? `♫ ${music.title} — ${music.artist}`
+                : 'Música regional não cadastrada';
+
+            if (changeMusic) {
+                bgMusic.pause();
+                bgMusic.src = music ? music.file : '';
+                bgMusic.load();
+                if (music && !isMuted) {
+                    bgMusic.play().catch(e => console.log("Música regional não pôde ser iniciada:", e));
+                }
+            }
             
             // Imagem da bandeira do estado na pasta local
             const flagImg = document.getElementById('flag-image');
-            const stateCode = currentState.code.replace('br-', '').toUpperCase();
-            flagImg.src = `bandeiras/${stateCode}.png`;
+            flagImg.src = `bandeiras/${stateCode.toUpperCase()}.png`;
             
             document.getElementById('feedback-message').textContent = "";
             document.getElementById('feedback-message').className = "feedback";
@@ -457,7 +500,7 @@
         function handleNextStep() {
             if (currentStep === "region") {
                 currentStep = "capital";
-                setupCurrentRound();
+                setupCurrentRound(false);
             } else {
                 currentStateIndex++;
                 if (currentStateIndex < gameStates.length) {
