@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz dos Estados e Capitais do Brasil</title>
+    <style>
+        :root {
+            --primary-color: #009c3b; /* Verde Bandeira */
+            --secondary-color: #ffdf00; /* Amarelo Canarinho */
+            --accent-color: #002776; /* Azul Celeste */
+            --background-color: #f4f7f5;
+            --card-color: #ffffff;
+            --text-color: #222222;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: var(--card-color);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-top: 8px solid var(--primary-color);
+            position: relative;
+        }
+
+        .audio-control {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #eee;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .audio-control:hover {
+            background: #e0e0e0;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-size: 26px;
+        }
+
+        h2 {
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background: #eaf5ee;
+            color: var(--primary-color);
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9;
+        }
+
+        .state-header {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .flag-container {
+            margin: 15px 0 20px 0;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flag-img {
+            max-height: 100%;
+            max-width: 260px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .instruction {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 480px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-option {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .btn-option:hover:not(:disabled) {
+            border-color: var(--primary-color);
+            background-color: #f0f9f2;
+            transform: translateY(-2px);
+        }
+
+        .btn-option:disabled {
+            cursor: not-allowed;
+        }
+
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724 !important;
+        }
+
+        .wrong {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24 !important;
+        }
+
+        .feedback {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            min-height: 27px;
+        }
+
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            margin: 0 auto;
+            transition: background 0.2s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-next:hover {
+            background-color: #007a2e;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .restart-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 17px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        .restart-btn:hover {
+            background-color: #007a2e;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Elementos de Áudio -->
+    <audio id="bg-music" loop src="https://assets.mixkit.co/music/preview/mixkit-games-worldbeat-466.mp3"></audio>
+    <audio id="sound-correct" src="dragon-studio-correct-472358.mp3"></audio>
+    <audio id="sound-wrong" src="eritnhut1992-buzzer-or-wrong-answer-20582.mp3"></audio>
+
+    <div class="container">
+        <!-- Botão para ligar/desligar áudio -->
+        <button id="mute-btn" class="audio-control" onclick="toggleMute()">🔊 Som Ligado</button>
+
+        <!-- TELA INICIAL -->
+        <div id="start-screen" class="screen active">
+            <h1>Quiz dos Estados Brasileiros</h1>
+            <h2>Bandeiras, Regiões e Capitais 🇧🇷</h2>
+            <p>Teste seus conhecimentos sobre a geografia do Brasil! A cada rodada você verá um estado com sua bandeira e deverá responder:</p>
+            <ul style="text-align: left; max-width: 80%; margin: 15px auto; line-height: 1.6;">
+                <li>📍 <strong>1º Passo:</strong> Qual é a Região do estado?</li>
+                <li>🏛️ <strong>2º Passo:</strong> Qual é a Capital do estado?</li>
+            </ul>
+            <p>Serão sorteados 10 estados por partida. Boa sorte!</p>
+            <button class="restart-btn" onclick="startGame()">Começar Jogo</button>
+        </div>
+
+        <!-- TELA DO JOGO -->
+        <div id="game-screen" class="screen">
+            <div class="status-bar">
+                <span id="score-display">Pontos: 0</span>
+                <span id="progress-display">Estado: 1/10</span>
+            </div>
+
+            <div id="state-title" class="state-header">Nome do Estado</div>
+
+            <div class="flag-container">
+                <img id="flag-image" src="" alt="Bandeira do Estado" class="flag-img">
+            </div>
+
+            <div id="game-instruction" class="instruction">Em qual região fica este estado?</div>
+
+            <div class="options-grid" id="options-container">
+                <!-- Botões gerados via JavaScript -->
+            </div>
+
+            <div id="feedback-message" class="feedback"></div>
+            <button id="next-btn" class="btn-next" onclick="handleNextStep()">Avançar</button>
+        </div>
+
+        <!-- TELA FINAL -->
+        <div id="end-screen" class="screen">
+            <h1>Fim de Jogo!</h1>
+            <h2>Veja o seu resultado final</h2>
+            <div style="font-size: 24px; margin: 20px 0; font-weight: bold; color: var(--accent-color);" id="final-score">
+                Você fez 0 pontos de um máximo de 20!
+            </div>
+            <p id="final-evaluation" style="font-size: 18px; line-height: 1.5;"></p>
+            <button class="restart-btn" onclick="startGame()">Jogar Novamente</button>
+        </div>
+    </div>
+
+    <script>
+        // Todas as 5 Regiões do Brasil
+        const allRegions = ["Norte", "Nordeste", "Centro-Oeste", "Sudeste", "Sul"];
+
+        // Banco de Dados com os 26 Estados + Distrito Federal
+        const poolStates = [
+            // Norte
+            { name: "Acre", capital: "Rio Branco", region: "Norte", code: "br-ac" },
+            { name: "Amapá", capital: "Macapá", region: "Norte", code: "br-ap" },
+            { name: "Amazonas", capital: "Manaus", region: "Norte", code: "br-am" },
+            { name: "Pará", capital: "Belém", region: "Norte", code: "br-pa" },
+            { name: "Rondônia", capital: "Porto Velho", region: "Norte", code: "br-ro" },
+            { name: "Roraima", capital: "Boa Vista", region: "Norte", code: "br-rr" },
+            { name: "Tocantins", capital: "Palmas", region: "Norte", code: "br-to" },
+            // Nordeste
+            { name: "Alagoas", capital: "Maceió", region: "Nordeste", code: "br-al" },
+            { name: "Bahia", capital: "Salvador", region: "Nordeste", code: "br-ba" },
+            { name: "Ceará", capital: "Fortaleza", region: "Nordeste", code: "br-ce" },
+            { name: "Maranhão", capital: "São Luís", region: "Nordeste", code: "br-ma" },
+            { name: "Paraíba", capital: "João Pessoa", region: "Nordeste", code: "br-pb" },
+            { name: "Pernambuco", capital: "Recife", region: "Nordeste", code: "br-pe" },
+            { name: "Piauí", capital: "Teresina", region: "Nordeste", code: "br-pi" },
+            { name: "Rio Grande do Norte", capital: "Natal", region: "Nordeste", code: "br-rn" },
+            { name: "Sergipe", capital: "Aracaju", region: "Nordeste", code: "br-se" },
+            // Centro-Oeste
+            { name: "Distrito Federal", capital: "Brasília", region: "Centro-Oeste", code: "br-df" },
+            { name: "Goiás", capital: "Goiânia", region: "Centro-Oeste", code: "br-go" },
+            { name: "Mato Grosso", capital: "Cuiabá", region: "Centro-Oeste", code: "br-mt" },
+            { name: "Mato Grosso do Sul", capital: "Campo Grande", region: "Centro-Oeste", code: "br-ms" },
+            // Sudeste
+            { name: "Espírito Santo", capital: "Vitória", region: "Sudeste", code: "br-es" },
+            { name: "Minas Gerais", capital: "Belo Horizonte", region: "Sudeste", code: "br-mg" },
+            { name: "Rio de Janeiro", capital: "Rio de Janeiro", region: "Sudeste", code: "br-rj" },
+            { name: "São Paulo", capital: "São Paulo", region: "Sudeste", code: "br-sp" },
+            // Sul
+            { name: "Paraná", capital: "Curitiba", region: "Sul", code: "br-pr" },
+            { name: "Rio Grande do Sul", capital: "Porto Alegre", region: "Sul", code: "br-rs" },
+            { name: "Santa Catarina", capital: "Florianópolis", region: "Sul", code: "br-sc" }
+        ];
+
+        let gameStates = [];
+        let currentStateIndex = 0;
+        let currentStep = "region"; // "region" ou "capital"
+        let score = 0;
+        let isMuted = false;
+        const totalRoundStates = 10; 
+
+        // Elementos de Áudio
+        const bgMusic = document.getElementById('bg-music');
+        const soundCorrect = document.getElementById('sound-correct');
+        const soundWrong = document.getElementById('sound-wrong');
+
+        bgMusic.volume = 0.25;
+        soundCorrect.volume = 0.5;
+        soundWrong.volume = 0.5;
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            bgMusic.muted = isMuted;
+            soundCorrect.muted = isMuted;
+            soundWrong.muted = isMuted;
+            
+            document.getElementById('mute-btn').textContent = isMuted ? "🔇 Mudo" : "🔊 Som Ligado";
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startGame() {
+            if (!isMuted) {
+                bgMusic.play().catch(e => console.log("Música iniciada após interação:", e));
+            }
+
+            gameStates = shuffle([...poolStates]).slice(0, totalRoundStates);
+            currentStateIndex = 0;
+            score = 0;
+            currentStep = "region";
+            
+            updateScoreDisplay();
+            setupCurrentRound();
+            showScreen('game-screen');
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('score-display').textContent = `Pontos: ${score}`;
+            document.getElementById('progress-display').textContent = `Estado: ${currentStateIndex + 1}/${gameStates.length}`;
+        }
+
+        function setupCurrentRound() {
+            const currentState = gameStates[currentStateIndex];
+            
+            document.getElementById('state-title').textContent = currentState.name;
+            
+            // Imagem da bandeira do estado na pasta local
+            const flagImg = document.getElementById('flag-image');
+            const stateCode = currentState.code.replace('br-', '').toUpperCase();
+            flagImg.src = `bandeiras/${stateCode}.png`;
+            
+            document.getElementById('feedback-message').textContent = "";
+            document.getElementById('feedback-message').className = "feedback";
+            document.getElementById('next-btn').style.display = "none";
+
+            if (currentStep === "region") {
+                document.getElementById('game-instruction').textContent = `Em qual região fica o estado: ${currentState.name}?`;
+                generateRegionOptions(currentState.region);
+            } else {
+                document.getElementById('game-instruction').textContent = `Qual é a capital do estado: ${currentState.name}?`;
+                generateCapitalOptions(currentState.capital);
+            }
+        }
+
+        function generateRegionOptions(correctRegion) {
+            let wrongRegions = allRegions.filter(r => r !== correctRegion);
+            wrongRegions = shuffle(wrongRegions).slice(0, 3);
+            
+            let finalOptions = shuffle([correctRegion, ...wrongRegions]);
+            renderButtons(finalOptions, correctRegion);
+        }
+
+        function generateCapitalOptions(correctCapital) {
+            let wrongCapitals = poolStates
+                .filter(s => s.capital !== correctCapital)
+                .map(s => s.capital);
+            
+            wrongCapitals = shuffle(wrongCapitals).slice(0, 3);
+            let finalOptions = shuffle([correctCapital, ...wrongCapitals]);
+            renderButtons(finalOptions, correctCapital);
+        }
+
+        function renderButtons(options, correctAnswer) {
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(btn, opt, correctAnswer);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedButton, selectedValue, correctAnswer) {
+            const buttons = document.querySelectorAll('.btn-option');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            const feedbackEl = document.getElementById('feedback-message');
+            
+            if (selectedValue === correctAnswer) {
+                selectedButton.classList.add('correct');
+                feedbackEl.textContent = "Resposta Correta! 👏✨";
+                feedbackEl.classList.add('correct');
+                
+                soundCorrect.currentTime = 0;
+                soundCorrect.play();
+
+                score++;
+                updateScoreDisplay();
+            } else {
+                selectedButton.classList.add('wrong');
+                feedbackEl.textContent = `Incorreto! A resposta certa era: ${correctAnswer}`;
+                feedbackEl.classList.add('wrong');
+                
+                soundWrong.currentTime = 0;
+                soundWrong.play();
+
+                buttons.forEach(btn => {
+                    if (btn.textContent === correctAnswer) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+            
+            document.getElementById('next-btn').style.display = "block";
+        }
+
+        function handleNextStep() {
+            if (currentStep === "region") {
+                currentStep = "capital";
+                setupCurrentRound();
+            } else {
+                currentStateIndex++;
+                if (currentStateIndex < gameStates.length) {
+                    currentStep = "region";
+                    updateScoreDisplay();
+                    setupCurrentRound();
+                } else {
+                    endGame();
+                }
+            }
+        }
+
+        function endGame() {
+            bgMusic.pause();
+
+            const maxPoints = gameStates.length * 2;
+            document.getElementById('final-score').textContent = `Você fez ${score} de ${maxPoints} pontos possíveis!`;
+            
+            let evalMessage = "";
+            if (score === maxPoints) {
+                evalMessage = "Sensacional! Você é um verdadeiro mestre da geografia brasileira! 🇧🇷🏆";
+            } else if (score >= maxPoints * 0.7) {
+                evalMessage = "Muito bom! Conhece super bem os estados e capitais do Brasil! 🥇";
+            } else if (score >= maxPoints * 0.4) {
+                evalMessage = "Bom resultado, mas ainda dá para aprender mais sobre as regiões e capitais! 🥈";
+            } else {
+                evalMessage = "Precisa estudar mais o mapa do Brasil! Que tal jogar de novo para praticar? 📚";
+            }
+            
+            document.getElementById('final-evaluation').textContent = evalMessage;
+            showScreen('end-screen');
+        }
+    </script>
+</body>
+</html>
