@@ -422,7 +422,8 @@
 
     <div class="track-info">
       <div id="current-title" class="track-title">Carregando...</div>
-      <div id="current-artist" class="track-artist">Pedradas do Inaldo</div>
+      <div id="current-artist" class="track-artist">Carregando cantor...</div>
+      <div id="current-album" class="track-artist">Carregando álbum...</div>
     </div>
 
     <audio id="audio-player" controls preload="metadata"></audio>
@@ -460,40 +461,62 @@
       
       
       {
-        "title": "Pedrada Especial de Sexta",
+        "musica": "A Desconhecida",
+        "cantor": "Fernando Mendes",
+        "album": "Você Não Me Ensinou a Te Esquecer",
         "file": "mp3/WhatsApp Audio 2026-08-28 at 06.25.32.mpeg",
-        "isFridayTrack": true
+        "isFridayTrack": false
       },
       {
-        "title": "Música do Inaldo 01",
+        "musica": "Não Devo Nada a Ninguém",
+        "cantor": "Banda Só Brega",
+        "album": "Não Devo Nada a Ninguém",
         "file": "mp3/WhatsApp Audio 2026-08-21 at 06.38.13.mpeg",
         "isFridayTrack": false
       },
       {
-        "title": "Música do Inaldo 02",
+        "musica": "Telefone Mudo",
+        "cantor": "Trio Parada Dura",
+        "album": "Raizes Sertanejas",
         "file": "mp3/WhatsApp Audio 2026-08-14 at 06.49.18.mpeg",
         "isFridayTrack": false
       },
       {
-        "title": "Música do Inaldo 03",
+        "musica": "Não Me Faça Chorar (Ao Vivo)",
+        "cantor": "Priscila Senna, Pablo",
+        "album": "Priscila Senna (15 Anos Ao Vivo Em Recife)",
         "file": "mp3/WhatsApp Audio 2026-08-07 at 06.24.51.mpeg",
         "isFridayTrack": false
       },
       {
-        "title": "Música do Inaldo 04",
+        "musica": "Eu Vou Rifar Meu Coração",
+        "cantor": "Lindomar Castilho",
+        "album": "Eu Vou Rifar Meu Coração",
         "file": "mp3/WhatsApp Audio 2026-07-31 at 07.42.44.mpeg",
         "isFridayTrack": false
       },
       {
-        "title": "Música do Inaldo 05",
+        "musica": "Tomara",
+        "cantor": "Pablo",
+        "album": "Pablo 20 ANOS, Pt.1",
         "file": "mp3/WhatsApp Audio 2026-07-24 at 08.58.58.mpeg",
         "isFridayTrack": false
       },
       {
-        "title": "Música do Inaldo 06",
+        "musica": "Feiticeira",
+        "cantor": "Lindomar Castilho",
+        "album": "O incomparável Lindomar Castilho",
         "file": "mp3/WhatsApp Audio 2026-07-17 at 06.44.51.mpeg",
         "isFridayTrack": false
+      },
+      {
+        "musica": "Quando Você Foi Embora",
+        "cantor": "Reginaldo Rossi",
+        "album": "Cheio de Amor",
+        "file": "mp3/WhatsApp Audio 2026-09-04 at 06.13.05.mpeg",
+        "isFridayTrack": true
       }
+      
     ]
   </script>
 
@@ -513,6 +536,8 @@
 
     const audioPlayer = document.getElementById('audio-player');
     const currentTitle = document.getElementById('current-title');
+    const currentArtist = document.getElementById('current-artist');
+    const currentAlbum = document.getElementById('current-album');
     const playlistElement = document.getElementById('playlist');
     const fridayTag = document.getElementById('friday-tag');
 
@@ -531,7 +556,7 @@
         spanNum.textContent = String(index + 1).padStart(2, '0');
 
         const spanTitle = document.createElement('span');
-        spanTitle.textContent = track.title;
+        spanTitle.textContent = `${track.musica} - ${track.cantor}`;
 
         li.appendChild(spanNum);
         li.appendChild(spanTitle);
@@ -547,7 +572,9 @@
       currentTrackIndex = index; // --- LINHA ADICIONADA/CORRIGIDA: Atualiza a faixa atual ---
       const track = playlist[index];
       audioPlayer.src = track.file;
-      currentTitle.textContent = track.title;
+      currentTitle.textContent = track.musica;
+      currentArtist.textContent = track.cantor || 'Cantor não informado';
+      currentAlbum.textContent = track.album || 'Álbum não informado';
 
       const items = playlistElement.querySelectorAll('li');
       items.forEach((item, idx) => {
@@ -614,7 +641,7 @@
     }
 
     function shareOnWhatsApp() {
-      const currentTrack = playlist[currentTrackIndex] ? playlist[currentTrackIndex].title : "Pedradas do Inaldo";
+      const currentTrack = playlist[currentTrackIndex] ? playlist[currentTrackIndex].musica : "Pedradas do Inaldo";
       const text = `🔥 Ouve essa pedrada! Tô escutando "${currentTrack}" nas Pedradas do Inaldo!`;
       const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + '\n' + window.location.href)}`;
       window.open(url, '_blank');
@@ -634,7 +661,11 @@
     audioPlayer.addEventListener('ended', playNextTrack);
 
     function loadPlaylist() {
-      playlist = playlist.filter(track => track && track.title && track.file);
+      playlist = playlist.filter(track => track && track.musica && track.file);
+      playlist = [
+        ...playlist.filter(track => track.isFridayTrack),
+        ...playlist.filter(track => !track.isFridayTrack)
+      ];
       renderPlaylist();
 
       if (!playlist.length) {
@@ -642,14 +673,8 @@
         return;
       }
 
-      if (isFriday) {
-        fridayTag.style.display = 'inline-block';
-        const fridayIndex = playlist.findIndex(track => track.isFridayTrack);
-        loadTrack(fridayIndex !== -1 ? fridayIndex : 0);
-      } else {
-        fridayTag.style.display = 'none';
-        loadTrack(0);
-      }
+      fridayTag.style.display = isFriday && playlist[0].isFridayTrack ? 'inline-block' : 'none';
+      loadTrack(0);
     }
 
     loadPlaylist();
