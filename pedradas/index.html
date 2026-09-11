@@ -587,11 +587,87 @@
         ]
       });
 
-      navigator.mediaSession.setActionHandler('play', () => audioPlayer.play());
-      navigator.mediaSession.setActionHandler('pause', () => audioPlayer.pause());
+      // Ações de controle do Picture-in-Picture
+      navigator.mediaSession.setActionHandler('play', () => {
+        // 1. Toca o elemento de áudio
+        audioPlayer.play().catch(e => console.log('Erro ao tocar via PiP:', e));
+        
+        // 2. Notifica a Media Session do navegador imediatamente
+        navigator.mediaSession.playbackState = 'playing';
+        
+        // 3. Se estiver usando o elemento <video> do PiP, execute-o
+        if (typeof pipVideo !== 'undefined' && pipVideo) {
+          pipVideo.play().catch(() => {});
+        }
+        
+        // 4. Atualiza a interface da sua aplicação
+        updatePlayPauseButton();
+      });
+
+      navigator.mediaSession.setActionHandler('pause', () => {
+        // 1. Pausa o elemento de áudio
+        audioPlayer.pause();
+        
+        // 2. Notifica a Media Session do navegador imediatamente
+        navigator.mediaSession.playbackState = 'paused';
+        
+        // 3. Se estiver usando um elemento <video> para transmitir o PiP, pause-o também
+        if (typeof pipVideo !== 'undefined' && pipVideo) {
+          pipVideo.pause();
+        }
+        
+        // 4. Atualiza a interface da sua aplicação
+        updatePlayPauseButton();
+      });
+      
       navigator.mediaSession.setActionHandler('previoustrack', playPrevTrack);
       navigator.mediaSession.setActionHandler('nexttrack', playNextTrack);
+
+      // Remove os botões de 10s e mantém apenas 'Próxima' e 'Anterior'
+      navigator.mediaSession.setActionHandler('seekbackward', null);
+      navigator.mediaSession.setActionHandler('seekforward', null);
+      
+      // Ação de retroceder (pula 10 segundos para trás)
+      /*navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+        console.log('seekbackward');
+        // Se o navegador passar o tempo do pulo, usa ele, senão padroniza para 10s
+        const skipTime = details.seekOffset || 10;
+        audioPlayer.currentTime = Math.max(audioPlayer.currentTime - skipTime, 0);
+        
+        // Atualiza a posição no Picture-in-Picture
+        updatePositionState();
+      });*/
+
+      // Ação de avançar (pula 10 segundos para frente)
+      /*navigator.mediaSession.setActionHandler('seekforward', (details) => {
+        console.log('seekforward');
+        // Se o navegador passar o tempo do pulo, usa ele, senão padroniza para 10s
+        const skipTime = details.seekOffset || 10;
+        audioPlayer.currentTime = Math.min(audioPlayer.currentTime + skipTime, audioPlayer.duration || Infinity);
+        
+        // Atualiza a posição no Picture-in-Picture
+        updatePositionState();
+      });*/
+
+      updatePositionState();
     }
+
+    
+
+    // Atualiza a barra de progresso e o estado para a janela flutuante
+    function updatePositionState() {
+      if ('setPositionState' in navigator.mediaSession) {
+        if (audioPlayer.duration && !isNaN(audioPlayer.duration) && isFinite(audioPlayer.duration)) {
+          navigator.mediaSession.setPositionState({
+            duration: audioPlayer.duration,
+            playbackRate: audioPlayer.playbackRate || 1.0,
+            position: audioPlayer.currentTime || 0
+          });
+        }
+      }
+    }
+
+
 
     function loadTrack(index) {
       if (!playlist[index]) return;
@@ -616,6 +692,7 @@
     }
 
     function playNextTrack() {
+      console.log('playNextTrack');
       if (!playlist.length) return;
       const nextIndex = (currentTrackIndex + 1) % playlist.length;
       loadTrack(nextIndex);
@@ -680,14 +757,28 @@
     if (volumeSlider) volumeSlider.addEventListener('input', setVolume);
     if (volumeBtn) volumeBtn.addEventListener('click', toggleMute);
 
+    // Escuta os eventos de play/pause do áudio para notificar o Chrome no momento exato
     audioPlayer.addEventListener('play', () => {
       updatePlayPauseButton();
-      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'playing';
+        updatePositionState();
+      }
     });
 
     audioPlayer.addEventListener('pause', () => {
       updatePlayPauseButton();
-      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'paused';
+        updatePositionState();
+      }
+    });
+
+    // Sincroniza o tempo atual com o controle da tela flutuante
+    audioPlayer.addEventListener('timeupdate', () => {
+      if ('mediaSession' in navigator && !audioPlayer.paused) {
+        updatePositionState();
+      }
     });
 
     // --- Lógica do Picture in Picture sem canvas clicável ---
@@ -888,6 +979,8 @@
     if (startBtn) {
       startBtn.addEventListener('click', startCountdown);
     }
+
+    
   </script>
 </body>
 </html>
