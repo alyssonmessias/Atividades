@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demonstração de Criptografia Simétrica vs Assimétrica</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f4f7f6;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    p.subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      text-align: center;
+      max-width: 600px;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      flex: 1;
+      min-width: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #2c3e50;
+      border-bottom: 2px solid #ecf0f1;
+      padding-bottom: 10px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Área de Animação */
+    .stage {
+      width: 100%;
+      height: 180px;
+      background-color: #f8f9fa;
+      border: 2px dashed #bdc3c7;
+      border-radius: 8px;
+      position: relative;
+      margin: 20px 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .actor {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-weight: bold;
+      color: #34495e;
+      z-index: 2;
+    }
+
+    .actor-icon {
+      font-size: 32px;
+    }
+
+    /* Mensagem */
+    .message {
+      position: absolute;
+      left: 15%;
+      padding: 10px 15px;
+      background-color: #e74c3c;
+      color: white;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      transition: all 1.8s ease-in-out;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 3;
+    }
+
+    /* Estado Criptografado */
+    .message.encrypted {
+      background-color: #95a5a6;
+    }
+
+    /* Chaves */
+    .key {
+      font-size: 18px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .key-symmetric { color: #f39c12; }
+    .key-public { color: #27ae60; }
+    .key-private { color: #8e44ad; }
+
+    /* Botões */
+    .btn {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    .btn:disabled {
+      background-color: #bdc3c7;
+      cursor: not-allowed;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .status-log {
+      font-size: 13px;
+      color: #555;
+      min-height: 40px;
+      text-align: center;
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    /* Chave em Destaque na Animação */
+    .key-display {
+      position: absolute;
+      font-size: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      z-index: 10;
+      transition: all 0.6s ease-in-out;
+    }
+
+    .key-display.show {
+      opacity: 1;
+    }
+
+    .key-display-label {
+      font-size: 12px;
+      color: #f39c12;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    /* Estilos específicos para chaves assimétricas */
+    .key-display.key-display-public {
+      font-size: 56px;
+      bottom: 20px;
+    }
+
+    .key-display.key-display-public .key-display-label {
+      color: #8e44ad;
+      font-size: 14px;
+    }
+
+    .key-display.key-display-private {
+      font-size: 40px;
+      top: 20px;
+      flex-direction: column-reverse;
+    }
+
+    .key-display.key-display-private .key-display-label {
+      color: #27ae60;
+      font-size: 12px;
+      margin-top: 0;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Visualizador de Criptografia</h1>
+  <p class="subtitle">Entenda como funcionam os dois principais métodos de proteção de dados na internet.</p>
+
+  <div class="container">
+    
+    <!-- Criptografia Simétrica -->
+    <div class="card">
+      <h2>Criptografia Simétrica</h2>
+      <p style="font-size: 13px; color: #666; text-align: center;">Usa a <b>mesma chave</b> <span class="key key-symmetric">🔑</span> para encriptar e decriptar.</p>
+      
+      <div class="stage" id="stage-sym">
+        <div class="actor">
+          <span class="actor-icon">👤</span>
+          <span>Alice</span>
+        </div>
+        
+        <div class="key-display" id="key-display-sym">
+          <span>🔑</span>
+          <span class="key-display-label">Chave Secreta</span>
+        </div>
+
+        <div class="message" id="msg-sym">
+          <span id="msg-sym-icon">📄</span>
+          <span id="msg-sym-text">Olá!</span>
+        </div>
+
+        <div class="actor">
+          <span class="actor-icon">👤</span>
+          <span>Bob</span>
+        </div>
+      </div>
+
+      <div class="status-log" id="log-sym">Clique no botão para iniciar a transmissão segura.</div>
+      <div class="btn-group">
+        <button class="btn" id="btn-sym-demo" onclick="startSymmetricAnimation()">Demonstração</button>
+        <button class="btn" id="btn-sym-step" onclick="nextSymmetricStep()">Passo a passo</button>
+      </div>
+    </div>
+
+    <!-- Criptografia Assimétrica -->
+    <div class="card">
+      <h2>Criptografia Assimétrica</h2>
+      <p style="font-size: 13px; color: #666; text-align: center;">
+        Encripta com a <b>Chave Pública</b> <span class="key key-public">🔑</span> e decripta com a <b>Chave Privada</b> <span class="key key-private">🔑</span>.
+      </p>
+
+      <div class="stage" id="stage-asym">
+        <div class="actor">
+          <span class="actor-icon">👤</span>
+          <span>Alice</span>
+        </div>
+
+        <div class="key-display key-display-public" id="key-display-asym-public">
+          <span>🔑</span>
+          <span class="key-display-label">Chave Pública</span>
+        </div>
+
+        <div class="key-display key-display-private" id="key-display-asym-private">
+          <span>🔑</span>
+          <span class="key-display-label">Chave Privada</span>
+        </div>
+
+        <div class="message" id="msg-asym">
+          <span id="msg-asym-icon">📄</span>
+          <span id="msg-asym-text">Segredo</span>
+        </div>
+
+        <div class="actor">
+          <span class="actor-icon">👤</span>
+          <span>Bob</span>
+        </div>
+      </div>
+
+      <div class="status-log" id="log-asym">Clique no botão para iniciar a transmissão segura.</div>
+      <div class="btn-group">
+        <button class="btn" id="btn-asym-demo" onclick="startAsymmetricAnimation()">Demonstração</button>
+        <button class="btn" id="btn-asym-step" onclick="nextAsymmetricStep()">Passo a passo</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let symStep = 0;
+    let asymStep = 0;
+
+    // --- LÓGICA SIMÉTRICA ---
+    function resetSymmetricAnimation() {
+      const msg = document.getElementById('msg-sym');
+      const text = document.getElementById('msg-sym-text');
+      const icon = document.getElementById('msg-sym-icon');
+      const keyDisplay = document.getElementById('key-display-sym');
+      
+      msg.style.left = '15%';
+      msg.classList.remove('encrypted');
+      text.innerText = 'Olá!';
+      icon.innerText = '📄';
+      keyDisplay.classList.remove('show');
+      keyDisplay.style.left = '50%';
+      symStep = 0;
+    }
+
+    function nextSymmetricStep() {
+      const msg = document.getElementById('msg-sym');
+      const text = document.getElementById('msg-sym-text');
+      const icon = document.getElementById('msg-sym-icon');
+      const log = document.getElementById('log-sym');
+      const btnDemo = document.getElementById('btn-sym-demo');
+      const btnStep = document.getElementById('btn-sym-step');
+      const keyDisplay = document.getElementById('key-display-sym');
+
+      if (symStep === 0) {
+        resetSymmetricAnimation();
+      }
+
+      btnDemo.disabled = true;
+      btnStep.disabled = true;
+
+      if (symStep === 0) {
+        log.innerHTML = "1. Alice prepara a mensagem original.";
+        btnStep.innerText = "Passo 1/4";
+        symStep++;
+        setTimeout(() => {
+          btnStep.disabled = false;
+        }, 500);
+      } else if (symStep === 1) {
+        log.innerHTML = "2. Alice criptografa a mensagem usando a <b>Chave Secreta Compartilhada 🔑 (Simétrica)</b>.";
+        keyDisplay.classList.add('show');
+        keyDisplay.style.left = '25%';
+        msg.classList.add('encrypted');
+        text.innerText = '#$%@!';
+        icon.innerText = '🔒';
+        btnStep.innerText = "Passo 2/4";
+        symStep++;
+        setTimeout(() => {
+          btnStep.disabled = false;
+        }, 500);
+      } else if (symStep === 2) {
+        log.innerHTML = "3. A mensagem cifrada viaja pela rede insegura junto com a chave que será usada na descriptografia...";
+        msg.style.left = '65%';
+        keyDisplay.style.left = '65%';
+        btnStep.innerText = "Passo 3/4";
+        symStep++;
+        setTimeout(() => {
+          btnStep.disabled = false;
+        }, 500);
+      } else if (symStep === 3) {
+        log.innerHTML = "4. Bob usa a <b>mesma Chave Secreta 🔑</b> para descriptografar e ler a mensagem.";
+        msg.classList.remove('encrypted');
+        text.innerText = 'Olá!';
+        icon.innerText = '📄';
+        keyDisplay.style.left = '75%';
+        btnStep.innerText = "Passo 4/4";
+        symStep++;
+        setTimeout(() => {
+          keyDisplay.classList.remove('show');
+          btnDemo.disabled = false;
+          btnStep.disabled = false;
+          btnStep.innerText = "Reiniciar";
+          symStep = 0;
+        }, 500);
+      }
+    }
+
+    // --- LÓGICA SIMÉTRICA ---
+    function startSymmetricAnimation() {
+      const msg = document.getElementById('msg-sym');
+      const text = document.getElementById('msg-sym-text');
+      const icon = document.getElementById('msg-sym-icon');
+      const log = document.getElementById('log-sym');
+      const btnDemo = document.getElementById('btn-sym-demo');
+      const btnStep = document.getElementById('btn-sym-step');
+      const keyDisplay = document.getElementById('key-display-sym');
+
+      btnDemo.disabled = true;
+      btnStep.disabled = true;
+      symStep = 0;
+      
+      // Reset
+      msg.style.left = '15%';
+      msg.classList.remove('encrypted');
+      text.innerText = 'Olá!';
+      icon.innerText = '📄';
+      keyDisplay.classList.remove('show');
+      keyDisplay.style.left = '50%';
+      log.innerHTML = "1. Alice prepara a mensagem original.";
+
+      // Passo 1: Encriptação (Mesma Chave Amarela)
+      setTimeout(() => {
+        log.innerHTML = "2. Alice criptografa a mensagem usando a <b>Chave Secreta Compartilhada 🔑 (Simétrica)</b>.";
+        keyDisplay.classList.add('show');
+        keyDisplay.style.left = '25%';
+        msg.classList.add('encrypted');
+        text.innerText = '#$%@!';
+        icon.innerText = '🔒';
+      }, 2000);
+
+      // Passo 2: Envio através do canal
+      setTimeout(() => {
+        log.innerHTML = "3. A mensagem cifrada viaja pela rede insegura junto com a chave que será usada na descriptografia...";
+        msg.style.left = '65%';
+        keyDisplay.style.left = '65%';
+      }, 4000);
+
+      // Passo 3: Decriptação pelo destinatário
+      setTimeout(() => {
+        log.innerHTML = "4. Bob usa a <b>mesma Chave Secreta 🔑</b> para descriptografar e ler a mensagem.";
+        msg.classList.remove('encrypted');
+        text.innerText = 'Olá!';
+        icon.innerText = '📄';
+        keyDisplay.style.left = '75%';
+      }, 6000);
+
+      // Finalizar
+      setTimeout(() => {
+        keyDisplay.classList.remove('show');
+        btnDemo.disabled = false;
+        btnStep.disabled = false;
+      }, 7500);
+    }
+
+    // --- LÓGICA ASSIMÉTRICA ---
+    function resetAsymmetricAnimation() {
+      const msg = document.getElementById('msg-asym');
+      const text = document.getElementById('msg-asym-text');
+      const icon = document.getElementById('msg-asym-icon');
+      const keyPublic = document.getElementById('key-display-asym-public');
+      const keyPrivate = document.getElementById('key-display-asym-private');
+      
+      msg.style.left = '15%';
+      msg.classList.remove('encrypted');
+      text.innerText = 'Segredo';
+      icon.innerText = '📄';
+      keyPublic.classList.remove('show');
+      keyPrivate.classList.remove('show');
+      keyPublic.style.left = '50%';
+      keyPrivate.style.left = '50%';
+      asymStep = 0;
+    }
+
+    function nextAsymmetricStep() {
+      const msg = document.getElementById('msg-asym');
+      const text = document.getElementById('msg-asym-text');
+      const icon = document.getElementById('msg-asym-icon');
+      const log = document.getElementById('log-asym');
+      const btnDemo = document.getElementById('btn-asym-demo');
+      const btnStep = document.getElementById('btn-asym-step');
+      const keyPublic = document.getElementById('key-display-asym-public');
+      const keyPrivate = document.getElementById('key-display-asym-private');
+
+      if (asymStep === 0) {
+        resetAsymmetricAnimation();
+      }
+
+      btnDemo.disabled = true;
+      btnStep.disabled = true;
+
+      if (asymStep === 0) {
+        log.innerHTML = "1. Alice quer enviar uma mensagem para Bob.";
+        btnStep.innerText = "Passo 1/4";
+        asymStep++;
+        setTimeout(() => {
+          btnStep.disabled = false;
+        }, 500);
+      } else if (asymStep === 1) {
+        log.innerHTML = "2. Alice pega a <b>Chave Pública do Bob 🔑</b> (roxa) e criptografa a mensagem.";
+        keyPublic.classList.add('show');
+        keyPublic.style.left = '25%';
+        msg.classList.add('encrypted');
+        text.innerText = '&*9#?';
+        icon.innerText = '🔒';
+        btnStep.innerText = "Passo 2/4";
+        asymStep++;
+        setTimeout(() => {
+          btnStep.disabled = false;
+        }, 500);
+      } else if (asymStep === 2) {
+        log.innerHTML = "3. O texto cifrado e a chave pública viajam pela rede...";
+        msg.style.left = '65%';
+        keyPublic.style.left = '65%';
+        btnStep.innerText = "Passo 3/4";
+        asymStep++;
+        setTimeout(() => {
+          btnStep.disabled = false;
+        }, 500);
+      } else if (asymStep === 3) {
+        log.innerHTML = "4. Bob usa sua <b>Chave Privada 🔑</b> (verde - só ele possui) para descriptografar.";
+        keyPublic.classList.remove('show');
+        keyPrivate.classList.add('show');
+        keyPrivate.style.left = '75%';
+        msg.classList.remove('encrypted');
+        text.innerText = 'Segredo';
+        icon.innerText = '📄';
+        btnStep.innerText = "Passo 4/4";
+        asymStep++;
+        setTimeout(() => {
+          btnDemo.disabled = false;
+          btnStep.disabled = false;
+          btnStep.innerText = "Reiniciar";
+          asymStep = 0;
+        }, 500);
+      }
+    }
+    function startAsymmetricAnimation() {
+      const msg = document.getElementById('msg-asym');
+      const text = document.getElementById('msg-asym-text');
+      const icon = document.getElementById('msg-asym-icon');
+      const log = document.getElementById('log-asym');
+      const btnDemo = document.getElementById('btn-asym-demo');
+      const btnStep = document.getElementById('btn-asym-step');
+      const keyPublic = document.getElementById('key-display-asym-public');
+      const keyPrivate = document.getElementById('key-display-asym-private');
+
+      btnDemo.disabled = true;
+      btnStep.disabled = true;
+      asymStep = 0;
+
+      // Reset
+      msg.style.left = '15%';
+      msg.classList.remove('encrypted');
+      text.innerText = 'Segredo';
+      icon.innerText = '📄';
+      keyPublic.classList.remove('show');
+      keyPrivate.classList.remove('show');
+      log.innerHTML = "1. Alice quer enviar uma mensagem para Bob.";
+
+      // Passo 1: Encriptação com Chave Pública de Bob
+      setTimeout(() => {
+        log.innerHTML = "2. Alice pega a <b>Chave Pública do Bob 🔑</b> (roxa) e criptografa a mensagem.";
+        keyPublic.classList.add('show');
+        keyPublic.style.left = '25%';
+        msg.classList.add('encrypted');
+        text.innerText = '&*9#?';
+        icon.innerText = '🔒';
+      }, 1500);
+
+      // Passo 2: Envio
+      setTimeout(() => {
+        log.innerHTML = "3. O texto cifrado e a chave pública viajam pela rede...";
+        msg.style.left = '65%';
+        keyPublic.style.left = '65%';
+      }, 3000);
+
+      // Passo 3: Decriptação com Chave Privada de Bob
+      setTimeout(() => {
+        log.innerHTML = "4. Bob usa sua <b>Chave Privada 🔑</b> (verde - só ele possui) para descriptografar.";
+        keyPublic.classList.remove('show');
+        keyPrivate.classList.add('show');
+        keyPrivate.style.left = '75%';
+        msg.classList.remove('encrypted');
+        text.innerText = 'Segredo';
+        icon.innerText = '📄';
+      }, 4500);
+
+      // Finalizar
+      setTimeout(() => {
+        keyPrivate.classList.remove('show');
+        btnDemo.disabled = false;
+        btnStep.disabled = false;
+      }, 6000);
+    }
+  </script>
+</body>
+</html>
