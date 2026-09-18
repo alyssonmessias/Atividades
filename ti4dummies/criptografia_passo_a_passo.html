@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criptografia Interativa - Controle por Passos</title>
+    <style>
+        :root {
+            --bg: #090d16;
+            --card-bg: #131c2e;
+            --text: #f1f5f9;
+            --text-muted: #64748b;
+            --primary: #38bdf8;
+            --accent: #f43f5e;
+            --green: #10b981;
+            --yellow: #eab308;
+            --border: #1e293b;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 { margin-bottom: 5px; color: var(--primary); text-align: center; font-size: 2rem; }
+        .subtitle { color: var(--text-muted); margin-bottom: 30px; text-align: center; max-width: 650px; font-size: 0.95rem; }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            width: 520px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card h2 { margin-top: 0; font-size: 1.3rem; border-bottom: 1px solid var(--border); padding-bottom: 12px; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+        
+        .badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 20px; font-weight: bold; }
+        .simetrica .badge { background: rgba(244, 63, 94, 0.1); color: var(--accent); border: 1px solid var(--accent); }
+        .assimetrica .badge { background: rgba(16, 185, 129, 0.1); color: var(--green); border: 1px solid var(--green); }
+
+        /* Canvas do Motion Graphic */
+        .canvas-container {
+            background: #060911;
+            border-radius: 12px;
+            margin: 15px 0;
+            position: relative;
+            border: 1px solid #1e293b;
+        }
+
+        /* Caixa de Status do Passo */
+        .status-box {
+            background: #0b111e;
+            padding: 12px 16px;
+            border-radius: 8px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .step-indicator {
+            font-weight: bold;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        /* Controles de Navegação por Passo */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn-step {
+            background: #1e293b;
+            color: #fff;
+            border: 1px solid #334155;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            flex: 1;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 0.85rem;
+        }
+        .btn-step:hover:not(:disabled) { background: #2d3748; border-color: #4a5568; }
+        .btn-step:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn-step.primary-action { background: var(--primary); color: #000; border: none; }
+        .btn-step.primary-action:hover:not(:disabled) { background: #7dd3fc; }
+
+        /* Linhas e Conexões do Motion */
+        .cable { stroke: #1e293b; stroke-width: 2; transition: stroke 0.3s; }
+        .cable-active { stroke: var(--primary); stroke-dasharray: 5 4; animation: transmission 1s linear infinite; }
+        @keyframes transmission { to { stroke-dashoffset: -18; } }
+
+        /* Interpolações de Transição dos Elementos */
+        .actor-node { fill: #1e293b; stroke: #334155; stroke-width: 1.5; }
+        .packet-group { transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); transform: translate(65px, 85px); }
+        .key-node { transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s; opacity: 0.1; }
+        .key-visible { opacity: 1; transform: scale(1); }
+        .key-rotating { animation: keyTurn 0.6s ease forwards; }
+        
+        @keyframes keyTurn {
+            0% { transform: scale(1.2) rotate(0deg); }
+            50% { transform: scale(1.4) rotate(45deg); filter: drop-shadow(0 0 8px var(--primary)); }
+            100% { transform: scale(1.2) rotate(90deg); }
+        }
+
+        .shackle { transition: transform 0.4s ease; transform-origin: 0px 4px; }
+        .shackle-locked { transform: rotate(0deg); }
+        .shackle-unlocked { transform: rotate(-45deg); }
+    </style>
+</head>
+<body>
+
+    <h1>Criptografia Avançada para Concursos</h1>
+    <div class="subtitle">Controle o fluxo dos dados e a aplicação das chaves passo a passo. Entenda a mecânica visual das questões de prova.</div>
+
+    <div class="container">
+
+        <!-- PAINEL SIMÉTRICO -->
+        <div class="card simetrica">
+            <h2>Criptografia Simétrica <span class="badge">CHAVE ÚNICA</span></h2>
+            <div class="status-box">
+                <span class="step-indicator" id="step-lbl-sim">Passo 0/3:</span>
+                <span id="text-sim">Clique em Avançar para iniciar o fluxo.</span>
+            </div>
+
+            <div class="canvas-container">
+                <svg width="100%" height="170" viewBox="0 0 480 170">
+                    <line id="cable-sim" class="cable" x1="65" y1="85" x2="415" y2="85" />
+                    
+                    <!-- Nós de Origem e Destino -->
+                    <circle class="actor-node" cx="65" cy="85" r="22" />
+                    <text x="65" y="89" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">Alice</text>
+                    
+                    <circle class="actor-node" cx="415" cy="85" r="22" />
+                    <text x="415" y="89" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">Bob</text>
+
+                    <!-- Ícone Chave Secreta Compartilhada -->
+                    <g id="svg-key-sim" class="key-node" transform="translate(240, 25) scale(0.5)">
+                        <circle cx="0" cy="0" r="12" fill="none" stroke="var(--accent)" stroke-width="3"/>
+                        <circle cx="0" cy="0" r="4" fill="var(--accent)"/>
+                        <path d="M12 0 H32 V8 H28 V4 H24 V8 H20 V0" fill="var(--accent)"/>
+                        <text x="16" y="-18" fill="var(--accent)" font-size="12" font-weight="bold" text-anchor="middle">Chave Secreta</text>
+                    </g>
+
+                    <!-- Pacote / Mensagem -->
+                    <g id="svg-pkt-sim" class="packet-group">
+                        <rect x="-22" y="-15" width="44" height="30" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                        <text id="svg-txt-sim" x="0" y="4" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">Doc</text>
+                        <!-- Cadeado interno detalhado -->
+                        <g id="svg-lock-sim" transform="translate(0, -22) scale(0.8)">
+                            <rect x="-7" y="-2" width="14" height="12" rx="2" fill="var(--green)"/>
+                            <path id="shackle-sim" class="shackle shackle-unlocked" d="M-4 -2 V-7 A4 4 0 0 1 4 -7 V-2" fill="none" stroke="var(--green)" stroke-width="2.5"/>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="controls">
+                <button class="btn-step" id="prev-sim" onclick="changeStepSim(-1)" disabled>◀ Voltar</button>
+                <button class="btn-step primary-action" id="next-sim" onclick="changeStepSim(1)">Avançar ▶</button>
+            </div>
+        </div>
+
+        <!-- PAINEL ASSIMÉTRICO -->
+        <div class="card assimetrica">
+            <h2>Criptografia Assimétrica <span class="badge">PAR DE CHAVES</span></h2>
+            <div class="status-box">
+                <span class="step-indicator" id="step-lbl-asim">Passo 0/3:</span>
+                <span id="text-asim">Clique em Avançar para iniciar o fluxo.</span>
+            </div>
+
+            <div class="canvas-container">
+                <svg width="100%" height="170" viewBox="0 0 480 170">
+                    <line id="cable-asim" class="cable" x1="65" y1="85" x2="415" y2="85" />
+                    
+                    <!-- Nós de Origem e Destino -->
+                    <circle class="actor-node" cx="65" cy="85" r="22" />
+                    <text x="65" y="89" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">Alice</text>
+                    
+                    <circle class="actor-node" cx="415" cy="85" r="22" />
+                    <text x="415" y="89" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">Bob</text>
+
+                    <!-- Chave Pública (Cifragem) -->
+                    <g id="svg-key-pub" class="key-node" transform="translate(150, 25) scale(0.5)">
+                        <circle cx="0" cy="0" r="12" fill="none" stroke="var(--primary)" stroke-width="3"/>
+                        <path d="M12 0 H30 V6 H26 V3 H22 V6 H18 V0" fill="var(--primary)"/>
+                        <text x="15" y="-18" fill="var(--primary)" font-size="12" font-weight="bold" text-anchor="middle">🔑 Pública de Bob</text>
+                    </g>
+
+                    <!-- Chave Privada (Decifragem) -->
+                    <g id="svg-key-priv" class="key-node" transform="translate(330, 25) scale(0.5)">
+                        <circle cx="0" cy="0" r="12" fill="none" stroke="var(--green)" stroke-width="3"/>
+                        <circle cx="0" cy="0" r="4" fill="var(--green)"/>
+                        <path d="M12 0 H34 V8 H30 V4 H26 V8 H22 V0" fill="var(--green)"/>
+                        <text x="17" y="-18" fill="var(--green)" font-size="12" font-weight="bold" text-anchor="middle">🔒 Privada de Bob</text>
+                    </g>
+
+                    <!-- Pacote / Mensagem -->
+                    <g id="svg-pkt-asim" class="packet-group">
+                        <rect x="-22" y="-15" width="44" height="30" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                        <text id="svg-txt-asim" x="0" y="4" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">Safe</text>
+                        <g id="svg-lock-asim" transform="translate(0, -22) scale(0.8)">
+                            <rect x="-7" y="-2" width="14" height="12" rx="2" fill="var(--green)"/>
+                            <path id="shackle-asim" class="shackle shackle-unlocked" d="M-4 -2 V-7 A4 4 0 0 1 4 -7 V-2" fill="none" stroke="var(--green)" stroke-width="2.5"/>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="controls">
+                <button class="btn-step" id="prev-asim" onclick="changeStepAsim(-1)" disabled>◀ Voltar</button>
+                <button class="btn-step primary-action" id="next-asim" onclick="changeStepAsim(1)">Avançar ▶</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentStepSim = 0;
+        let currentStepAsim = 0;
+
+        const stepsSim = [
+            {
+                text: "Clique em Avançar para iniciar o fluxo.",
+                action: () => {
+                    updatePkt('sim', 65, "Doc", "var(--green)", false, false);
+                    updateKey('sim', false, false);
+                }
+            },
+            {
+                text: "Alice usa a <b>Chave Secreta</b> compartilhada para cifrar o documento. O cadeado se tranca e os dados viram borrões cibernéticos.",
+                action: () => {
+                    updatePkt('sim', 65, "%#X", "var(--accent)", true, true);
+                    updateKey('sim', true, true);
+                }
+            },
+            {
+                text: "O pacote trafega pelo canal de comunicação. Se um interceptador (hacker) capturar o arquivo aqui, não conseguirá ler nada.",
+                action: () => {
+                    updatePkt('sim', 240, "%#X", "var(--accent)", true, false);
+                    updateKey('sim', true, false);
+                    document.getElementById('cable-sim').className.baseVal = "cable cable-active";
+                }
+            },
+            {
+                text: "O pacote chega. Bob usa a <b>MESMA Chave Secreta</b> (que ele já possuía previamente) para abrir o cadeado e ler o documento original.",
+                action: () => {
+                    updatePkt('sim', 415, "Doc", "var(--green)", false, true);
+                    updateKey('sim', true, true);
+                }
+            }
+        ];
+
+        const stepsAsim = [
+            {
+                text: "Clique em Avançar para iniciar o fluxo.",
+                action: () => {
+                    updatePkt('asim', 65, "Safe", "var(--green)", false, false);
+                    updateKey('pub', false, false); updateKey('priv', false, false);
+                }
+            },
+            {
+                text: "Alice quer enviar algo para Bob. Ela pega a <b>Chave PÚBLICA de Bob</b> (que é aberta a todos) e cifra a mensagem. O cadeado fecha.",
+                action: () => {
+                    updatePkt('asim', 65, "@*&", "var(--primary)", true, true);
+                    updateKey('pub', true, true); updateKey('priv', false, false);
+                }
+            },
+            {
+                text: "O pacote trafega blindado. Lembrete de prova: A chave pública serve para CIFRAR. Mesmo que o hacker tenha a chave pública, ele NÃO abre o pacote.",
+                action: () => {
+                    updatePkt('asim', 240, "@*&", "var(--primary)", true, false);
+                    updateKey('pub', false, false); updateKey('priv', false, false);
+                    document.getElementById('cable-asim').className.baseVal = "cable cable-active";
+                }
+            },
+            {
+                text: "Bob recebe o pacote e aplica sua <b>Chave PRIVADA</b> (que é secreta e só ele tem). O cadeado abre. Regra de Ouro: O que a pública tranca, só a privada abre!",
+                action: () => {
+                    updatePkt('asim', 415, "Safe", "var(--green)", false, true);
+                    updateKey('pub', false, false); updateKey('priv', true, true);
+                }
+            }
+        ];
+
+        function updatePkt(type, x, text, lockColor, isLocked, isKeyAction) {
+            const pkt = document.getElementById(`svg-pkt-${type}`);
+            const txt = document.getElementById(`svg-txt-${type}`);
+            const shackle = document.getElementById(`shackle-${type}`);
+            const lockRect = document.querySelector(`#svg-lock-${type} rect`);
+            
+            pkt.style.transform = `translate(${x}px, 85px)`;
+            txt.textContent = text;
+            
+            lockRect.style.fill = lockColor;
+            shackle.style.stroke = lockColor;
+            if (isLocked) {
+                shackle.className.baseVal = "shackle shackle-locked";
+            } else {
+                shackle.className.baseVal = "shackle shackle-unlocked";
+            }
+            
+            if(!isKeyAction && x !== 240) {
+                document.getElementById(`cable-${type}`).className.baseVal = "cable";
+            }
+        }
+
+        function updateKey(id, isVisible, isTurning) {
+            const keyElement = document.getElementById(`svg-key-${id}`);
+            if (!keyElement) return;
+            let baseTransform = id === 'sim' ? 'translate(240, 25)' : (id === 'pub' ? 'translate(150, 25)' : 'translate(330, 25)');
+            
+            if (isVisible) {
+                keyElement.className.baseVal = "key-node key-visible" + (isTurning ? " key-rotating" : "");
+            } else {
+                keyElement.className.baseVal = "key-node";
+                keyElement.style.transform = baseTransform + " scale(0.5)";
+            }
+        }
+
+        function changeStepSim(direction) {
+            currentStepSim += direction;
+            document.getElementById('step-lbl-sim').textContent = `Passo ${currentStepSim}/3:`;
+            document.getElementById('text-sim').innerHTML = stepsSim[currentStepSim].text;
+            stepsSim[currentStepSim].action();
+            
+            document.getElementById('prev-sim').disabled = currentStepSim === 0;
+            document.getElementById('next-sim').disabled = currentStepSim === stepsSim.length - 1;
+        }
+
+        function changeStepAsim(direction) {
+            currentStepAsim += direction;
+            document.getElementById('step-lbl-asim').textContent = `Passo ${currentStepAsim}/3:`;
+            document.getElementById('text-asim').innerHTML = stepsAsim[currentStepAsim].text;
+            stepsAsim[currentStepAsim].action();
+            
+            document.getElementById('prev-asim').disabled = currentStepAsim === 0;
+            document.getElementById('next-asim').disabled = currentStepAsim === stepsAsim.length - 1;
+        }
+    </script>
+</body>
+</html>
