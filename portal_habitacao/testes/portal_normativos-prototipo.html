@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal da Habitação - Consulta de Normativos</title>
+  <style>
+    :root {
+      --primary: #1a365d;
+      --primary-light: #2b6cb0;
+      --accent: #d69e2e;
+      --bg-gray: #f7fafc;
+      --border-color: #e2e8f0;
+      --text-color: #2d3748;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-gray);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    /* Header e Navegação */
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1rem 2rem;
+      border-bottom: 4px solid var(--accent);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo-area h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .logo-area span {
+      font-size: 0.85rem;
+      color: #cbd5e0;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--accent);
+    }
+
+    /* Layout Principal */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 850px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sidebar - Filtros (Estilo Presidência/DOU) */
+    .sidebar {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      height: fit-content;
+    }
+
+    .sidebar h3 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .filter-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .filter-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #4a5568;
+    }
+
+    .filter-group select, .filter-group input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .checkbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background-color: var(--primary-light);
+      color: white;
+      border: none;
+      padding: 0.6rem;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover {
+      background-color: var(--primary);
+    }
+
+    /* Conteúdo da Busca */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .search-box {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .search-input-wrapper {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .search-input-wrapper input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    /* Módulos do Portal (Cards Rápidos) */
+    .portal-modules {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .module-card {
+      background: white;
+      padding: 1rem;
+      border-radius: 6px;
+      border-left: 4px solid var(--primary-light);
+      border-top: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      text-decoration: none;
+      color: var(--text-color);
+      transition: transform 0.2s;
+    }
+
+    .module-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .module-card h4 {
+      font-size: 0.95rem;
+      color: var(--primary);
+      margin-bottom: 0.2rem;
+    }
+
+    .module-card p {
+      font-size: 0.8rem;
+      color: #718096;
+    }
+
+    /* Resultados da Busca (Estilo DOU) */
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: #718096;
+    }
+
+    .norma-card {
+      background: white;
+      padding: 1.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .norma-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .norma-badge {
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .norma-title {
+      font-size: 1.1rem;
+      color: var(--primary-light);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .norma-title:hover {
+      text-decoration: underline;
+    }
+
+    .norma-date {
+      font-size: 0.8rem;
+      color: #a0aec0;
+    }
+
+    .norma-ementa {
+      font-size: 0.9rem;
+      color: #4a5568;
+      text-align: justify;
+    }
+
+    .norma-footer {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .norma-link {
+      color: var(--primary-light);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .norma-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Rodapé */
+    footer {
+      background-color: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 3rem;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabecalho Institucional -->
+  <header>
+    <div class="header-container">
+      <div class="logo-area">
+        <h1>Portal da Habitação</h1>
+        <span>Secretaria Nacional de Habitação - SNH / MCID</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#" class="active">Consulta de Normativos</a></li>
+          <li><a href="#">Compra Assistida</a></li>
+          <li><a href="#">Cursos & EAD (Capacidades)</a></li>
+          <li><a href="#">Acervo Multimídia</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Container Principal -->
+  <div class="container">
+
+    <!-- Filtros Laterais (Hierarquia & Atos) -->
+    <aside class="sidebar">
+      <h3>Filtros de Pesquisa</h3>
+
+      <div class="filter-group">
+        <label>Hierarquia / Espécie Normativa</label>
+        <div class="checkbox-list">
+          <label class="checkbox-item"><input type="checkbox" checked> Leis / Medidas Provisórias</label>
+          <label class="checkbox-item"><input type="checkbox" checked> Decretos</label>
+          <label class="checkbox-item"><input type="checkbox" checked> Portarias MCID / SNH</label>
+          <label class="checkbox-item"><input type="checkbox"> Instruções Normativas</label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Programa / Modalidade</label>
+        <select>
+          <option value="">Todas as modalidades</option>
+          <option value="far">MCMV - FAR</option>
+          <option value="compra-assistida">Compra Assistida</option>
+          <option value="fnhis">FNHIS / SNHIS</option>
+          <option value="trabalho-social">Trabalho Social</option>
+          <option value="rural">MCMV Rural</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Ano da Publicação</label>
+        <input type="number" placeholder="Ex: 2025" min="2000" max="2026">
+      </div>
+
+      <div class="filter-group">
+        <label>Origem da Publicação</label>
+        <select>
+          <option value="">Todas</option>
+          <option value="dou">Diário Oficial da União (DOU)</option>
+          <option value="snh">Acervo Jurídico SNH</option>
+        </select>
+      </div>
+
+      <button class="btn-submit">Aplicar Filtros</button>
+    </aside>
+
+    <!-- Área de Conteúdo Principal -->
+    <main class="main-content">
+
+      <!-- Módulos de Acesso Rápido -->
+      <div class="portal-modules">
+        <a href="#" class="module-card">
+          <h4>MCMV - FAR</h4>
+          <p>Portarias, seleções e diretrizes do Fundo</p>
+        </a>
+        <a href="#" class="module-card">
+          <h4>Compra Assistida</h4>
+          <p>Regulamentação para emergências e calamidades</p>
+        </a>
+        <a href="#" class="module-card">
+          <h4>Capacitações EAD</h4>
+          <p>Cursos ativos no Portal Capacidades</p>
+        </a>
+      </div>
+
+      <!-- Barra de Busca Geral -->
+      <div class="search-box">
+        <div class="search-input-wrapper">
+          <input type="text" placeholder="Digite o número da norma, termo ou assunto (Ex: Portaria 488, Trabalho Social, Cadastro)..." value="Trabalho Social">
+          <button class="btn-submit" style="width: auto; padding: 0 1.5rem;">Buscar</button>
+        </div>
+      </div>
+
+      <!-- Cabeçalho dos Resultados -->
+      <div class="results-header">
+        <span>Exibindo <strong>3 normativos</strong> encontrados</span>
+        <span>Ordenado por: <strong>Mais recentes</strong></span>
+      </div>
+
+      <!-- Lista de Resultados (Cards) -->
+      <div class="norma-card">
+        <div class="norma-header">
+          <span class="norma-badge">Portaria MCID</span>
+          <span class="norma-date">Publicado no DOU em: 19/05/2025</span>
+        </div>
+        <a href="https://www.in.gov.br/en/web/dou/-/portaria-mcid-n-488-de-19-de-maio-de-2025-630689873" target="_blank" class="norma-title">Portaria MCID nº 488, de 19 de Maio de 2025</a>
+        <p class="norma-ementa">Dispõe sobre os critérios operacionais e diretrizes para a execução da modalidade Compra Assistida no âmbito do Programa Minha Casa, Minha Vida, visando o atendimento a famílias em situação de vulnerabilidade atingidas por calamidades públicas.</p>
+        <div class="norma-footer">
+          <a href="#" class="norma-link">📄 Texto Integral (PDF)</a>
+          <a href="#" class="norma-link">🔗 Ver no DOU</a>
+          <a href="#" class="norma-link">📌 Normas Correlatas</a>
+        </div>
+      </div>
+
+      <div class="norma-card">
+        <div class="norma-header">
+          <span class="norma-badge">Portaria MCID</span>
+          <span class="norma-date">Publicado no DOU em: 10/01/2025</span>
+        </div>
+        <a href="#" class="norma-title">Portaria MCID nº 75, de 10 de Janeiro de 2025</a>
+        <p class="norma-ementa">Aprova as novas diretrizes do Projeto Técnico Social (PTS) e o regulamento do Trabalho Social no âmbito das modalidades do Programa Minha Casa, Minha Vida e FNHIS.</p>
+        <div class="norma-footer">
+          <a href="#" class="norma-link">📄 Texto Integral (PDF)</a>
+          <a href="#" class="norma-link">🔗 Ver no DOU</a>
+        </div>
+      </div>
+
+      <div class="norma-card">
+        <div class="norma-header">
+          <span class="norma-badge">Lei Federal</span>
+          <span class="norma-date">Publicado no DOU em: 14/07/2023</span>
+        </div>
+        <a href="#" class="norma-title">Lei nº 14.620, de 13 de Julho de 2023</a>
+        <p class="norma-ementa">Dispõe sobre a recriação do Programa Minha Casa, Minha Vida (MCMV); altera as Leis nºs 11.977, 14.133, e dá outras providências.</p>
+        <div class="norma-footer">
+          <a href="#" class="norma-link">📄 Texto Consolidado (Presidência)</a>
+          <a href="#" class="norma-link">🔗 Ver no DOU</a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Rodapé Institucional -->
+  <footer>
+    <p>Secretaria Nacional de Habitação - Ministério das Cidades | Governo Federal</p>
+    <p style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.3rem;">Protótipo de Interface - Meta 3 (Monitoramento e Evidências)</p>
+  </footer>
+
+</body>
+</html>

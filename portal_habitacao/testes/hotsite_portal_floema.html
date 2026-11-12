@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotsite Portal da Habitação — Ministério das Cidades</title>
+  <!-- Fontes inspiradas na Floema: Cormorant Garamond (Serifa Elegante) e Plus Jakarta Sans (Sans-serif moderna) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #0a1410;
+      --bg-dark-card: #12211b;
+      --bg-cream: #f4efe6;
+      --accent-gold: #c69255;
+      --accent-gold-light: #e0b47a;
+      --text-light: #f4efe6;
+      --text-dark: #1c2822;
+      --text-muted: #9ab0a5;
+      --gov-green: #138e3d;
+      --caixa-orange: #f37021;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-sans);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Barra Superior Governamental Minimalista */
+    .gov-bar {
+      background-color: rgba(10, 20, 16, 0.95);
+      border-bottom: 1px solid rgba(244, 239, 230, 0.08);
+      padding: 0.5rem 2rem;
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .gov-bar a {
+      color: var(--accent-gold);
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Navegação Estilo Floema (Fixed, Glassmorphism & Minimalista) */
+    header.floema-nav {
+      position: fixed;
+      top: 33px;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      padding: 1.2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      background: rgba(10, 20, 16, 0.4);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    header.floema-nav.scrolled {
+      padding: 0.8rem 3rem;
+      background: rgba(10, 20, 16, 0.92);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-logo img {
+      height: 32px;
+      filter: brightness(0) invert(1);
+    }
+
+    .brand-logo-text {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text-light);
+      letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      opacity: 0.8;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      opacity: 1;
+      color: var(--accent-gold);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent-gold);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .btn-nav-cta {
+      background: transparent;
+      color: var(--accent-gold);
+      border: 1px solid var(--accent-gold);
+      padding: 0.5rem 1.4rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .btn-nav-cta:hover {
+      background: var(--accent-gold);
+      color: var(--bg-dark);
+    }
+
+    /* Elementos de Scroll Reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.15s; }
+    .reveal-delay-2 { transition-delay: 0.3s; }
+    .reveal-delay-3 { transition-delay: 0.45s; }
+
+    /* Seção Hero com Efeito Imersivo */
+    .hero {
+      min-height: 100vh;
+      padding-top: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: radial-gradient(circle at 50% 30%, rgba(19, 142, 61, 0.15) 0%, rgba(10, 20, 16, 1) 70%);
+      text-align: center;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    .hero-badge {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--accent-gold);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      border: 1px solid rgba(198, 146, 85, 0.3);
+      padding: 0.4rem 1.2rem;
+      border-radius: 20px;
+      background: rgba(198, 146, 85, 0.05);
+    }
+
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 6vw, 4.8rem);
+      font-weight: 400;
+      line-height: 1.1;
+      max-width: 1000px;
+      margin-bottom: 1.5rem;
+      color: var(--text-light);
+    }
+
+    .hero h1 span {
+      font-style: italic;
+      color: var(--accent-gold-light);
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-muted);
+      max-width: 680px;
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    /* Módulo de Busca Flutuante de Alto Impacto */
+    .search-hero-wrapper {
+      width: 100%;
+      max-width: 820px;
+      position: relative;
+      margin-bottom: 3rem;
+    }
+
+    .search-hero-box {
+      background: rgba(18, 33, 27, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(244, 239, 230, 0.15);
+      border-radius: 50px;
+      padding: 0.5rem 0.6rem 0.5rem 1.8rem;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      transition: all 0.3s;
+    }
+
+    .search-hero-box:focus-within {
+      border-color: var(--accent-gold);
+      box-shadow: 0 20px 50px rgba(198, 146, 85, 0.25);
+    }
+
+    .search-hero-box input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-light);
+      font-size: 1.05rem;
+      font-weight: 300;
+    }
+
+    .search-hero-box input::placeholder {
+      color: rgba(244, 239, 230, 0.4);
+    }
+
+    .btn-search-hero {
+      background: var(--accent-gold);
+      color: var(--bg-dark);
+      border: none;
+      padding: 0.9rem 2.2rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-search-hero:hover {
+      background: var(--accent-gold-light);
+      transform: scale(1.03);
+    }
+
+    /* Sugestões Dinâmicas de Busca */
+    .hero-suggestions {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      right: 0;
+      background: var(--bg-dark-card);
+      border: 1px solid rgba(244, 239, 230, 0.15);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      max-height: 360px;
+      overflow-y: auto;
+      display: none;
+      z-index: 100;
+      text-align: left;
+    }
+
+    .hero-suggestion-item {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+    }
+
+    .hero-suggestion-item:hover {
+      background: rgba(198, 146, 85, 0.1);
+    }
+
+    .hero-suggestion-item .sug-title {
+      color: var(--text-light);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .hero-suggestion-item .sug-cat {
+      font-size: 0.75rem;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Indicator de Scroll */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.6;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--accent-gold), transparent);
+      animation: scrollDown 2s infinite;
+    }
+
+    @keyframes scrollDown {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      51% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* Seções com Estética Cream / Dark Alternadas (Floema Style) */
+    .section-cream {
+      background-color: var(--bg-cream);
+      color: var(--text-dark);
+      padding: 7rem 3rem;
+      position: relative;
+    }
+
+    .section-dark {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      padding: 7rem 3rem;
+      position: relative;
+    }
+
+    .section-header {
+      max-width: 800px;
+      margin: 0 auto 5rem;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--accent-gold);
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 400;
+      line-height: 1.2;
+    }
+
+    .section-cream .section-title {
+      color: var(--text-dark);
+    }
+
+    .section-dark .section-title {
+      color: var(--text-light);
+    }
+
+    /* Card Grid Inspirado na Floema */
+    .floema-grid {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 2.5rem;
+    }
+
+    .floema-card {
+      background: rgba(18, 33, 27, 0.6);
+      border: 1px solid rgba(244, 239, 230, 0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-cream .floema-card {
+      background: #ffffff;
+      border: 1px solid rgba(28, 40, 34, 0.08);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    }
+
+    .floema-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--accent-gold);
+    }
+
+    .card-image-box {
+      height: 240px;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .floema-card:hover .card-image-box img {
+      transform: scale(1.08);
+    }
+
+    .card-content {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-gold);
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+
+    .card-title {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    .section-cream .card-title { color: var(--text-dark); }
+    .section-dark .card-title { color: var(--text-light); }
+
+    .card-desc {
+      font-size: 0.92rem;
+      opacity: 0.8;
+      margin-bottom: 1.8rem;
+      flex: 1;
+      font-weight: 300;
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--accent-gold);
+      transition: gap 0.3s;
+    }
+
+    .card-link:hover {
+      gap: 1rem;
+    }
+
+    /* Seção Especial de Diversidade & Acessibilidade Social */
+    .diversity-showcase {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .diversity-showcase { grid-template-columns: 1fr; gap: 2rem; }
+    }
+
+    .diversity-info h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 3.5vw, 3.2rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      color: var(--text-dark);
+    }
+
+    .diversity-info p {
+      font-size: 1.05rem;
+      color: #4a5851;
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .pill-item {
+      background: rgba(28, 40, 34, 0.05);
+      border: 1px solid rgba(28, 40, 34, 0.12);
+      padding: 0.6rem 1.2rem;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .diversity-mosaic {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+    }
+
+    .mosaic-item {
+      border-radius: 16px;
+      overflow: hidden;
+      height: 200px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .mosaic-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s;
+    }
+
+    .mosaic-item:hover img {
+      transform: scale(1.08);
+    }
+
+    /* Call to Action Final - Agendamentos & Simulador */
+    .cta-banner {
+      background: linear-gradient(135deg, #0e241b 0%, #06100c 100%);
+      border: 1px solid rgba(198, 146, 85, 0.3);
+      border-radius: 24px;
+      padding: 4.5rem 2rem;
+      text-align: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    }
+
+    .cta-banner h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 3.5vw, 3.2rem);
+      font-weight: 400;
+      margin-bottom: 1rem;
+      color: var(--text-light);
+    }
+
+    .cta-banner p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+      font-weight: 300;
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-floema-gold {
+      background: var(--accent-gold);
+      color: var(--bg-dark);
+      padding: 1rem 2.5rem;
+      border-radius: 40px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+
+    .btn-floema-gold:hover {
+      background: var(--accent-gold-light);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(198, 146, 85, 0.4);
+    }
+
+    .btn-floema-outline {
+      background: transparent;
+      color: var(--text-light);
+      border: 1px solid rgba(244, 239, 230, 0.3);
+      padding: 1rem 2.5rem;
+      border-radius: 40px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+
+    .btn-floema-outline:hover {
+      border-color: var(--text-light);
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* Rodapé Elegante */
+    footer {
+      background-color: #060c09;
+      padding: 4rem 3rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .footer-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-brand h4 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+
+    .footer-links h5 {
+      color: var(--accent-gold);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 1.2rem;
+    }
+
+    .footer-links ul { list-style: none; }
+    .footer-links ul li { margin-bottom: 0.6rem; }
+    .footer-links ul a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+    .footer-links ul a:hover { color: var(--text-light); }
+
+    .footer-bottom {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de Governo -->
+  <div class="gov-bar">
+    <a href="https://www.gov.br" target="_blank">BRASIL / GOV.BR</a>
+    <span>SECRETARIA NACIONAL DE HABITAÇÃO — MINISTÉRIO DAS CIDADES</span>
+  </div>
+
+  <!-- Navegação Flutuante Inspirada na Floema -->
+  <header class="floema-nav" id="mainHeader">
+    <div class="brand-logo">
+      <img src="https://barra.sistema.gov.br/v1/assets/govbr.webp" alt="Gov.br">
+      <span class="brand-logo-text">HABITAÇÃO</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#solucoes">Soluções</a></li>
+      <li><a href="#imoveis">Imóveis Caixa</a></li>
+      <li><a href="#mcmv">Minha Casa Minha Vida</a></li>
+      <li><a href="#normativos">Normativos</a></li>
+      <li><a href="#universalidade">Inclusão</a></li>
+    </ul>
+    <a href="#simulador" class="btn-nav-cta">Simular Imóvel</a>
+  </header>
+
+  <!-- Hero Section Imersiva -->
+  <section class="hero">
+    <div class="hero-badge reveal">Direito à Moradia Dignidade Social</div>
+    <h1 class="reveal reveal-delay-1">Arquitetando oportunidades, <span>transformando vidas.</span></h1>
+    <p class="reveal reveal-delay-2">O agregador unificado de soluções habitacionais do Brasil. Acesso simples, transparente e universal para todas as famílias brasileiras.</p>
+
+    <!-- Campo de Pesquisa Inteligente -->
+    <div class="search-hero-wrapper reveal reveal-delay-3">
+      <div class="search-hero-box">
+        <input type="text" id="heroSearchInput" placeholder="O que você precisa? (ex: Compra Assistida, Leilão Caixa, Portaria 488)..." autocomplete="off">
+        <button class="btn-search-hero" onclick="executarBuscaHero()">
+          <span>Buscar</span>
+        </button>
+      </div>
+
+      <!-- Sugestões da Busca -->
+      <div class="hero-suggestions" id="heroSuggestions"></div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span>Role para explorar</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Seção 1: Módulos Principais (Dark Theme) -->
+  <section class="section-dark" id="solucoes">
+    <div class="section-header reveal">
+      <span class="section-subtitle">Portal Agregador</span>
+      <h2 class="section-title">Serviços e Soluções Integradas</h2>
+    </div>
+
+    <div class="floema-grid">
+      
+      <!-- Card 1: Imóveis Caixa -->
+      <div class="floema-card reveal reveal-delay-1" id="imoveis">
+        <div class="card-image-box">
+          <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=800&auto=format&fit=crop" alt="Imóveis Caixa">
+        </div>
+        <div class="card-content">
+          <span class="card-tag">Oportunidades Especiais</span>
+          <h3 class="card-title">Imóveis à Venda CAIXA</h3>
+          <p class="card-desc">Adquira casas e apartamentos usados com descontos exclusivos, opções de leilão e linhas facilitadas de financiamento.</p>
+          <a href="https://www.caixa.gov.br/voce/habitacao/imoveis-venda/Paginas/default.aspx" target="_blank" class="card-link">Explorar Imóveis ➔</a>
+        </div>
+      </div>
+
+      <!-- Card 2: Minha Casa Minha Vida -->
+      <div class="floema-card reveal reveal-delay-2" id="mcmv">
+        <div class="card-image-box">
+          <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop" alt="Minha Casa Minha Vida">
+        </div>
+        <div class="card-content">
+          <span class="card-tag">Subsídios e Atendimento</span>
+          <h3 class="card-title">Minha Casa, Minha Vida</h3>
+          <p class="card-desc">Subsídios governamentais e condições especiais para famílias de baixa renda nas modalidades urbanas e rurais.</p>
+          <a href="https://www.caixa.gov.br/voce/habitacao/minha-casa-minha-vida/paginas/default.aspx" target="_blank" class="card-link">Conhecer Regras ➔</a>
+        </div>
+      </div>
+
+      <!-- Card 3: Compra Assistida -->
+      <div class="floema-card reveal reveal-delay-3" id="compra-assistida">
+        <div class="card-image-box">
+          <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=800&auto=format&fit=crop" alt="Compra Assistida">
+        </div>
+        <div class="card-content">
+          <span class="card-tag">Atendimento Emergencial</span>
+          <h3 class="card-title">Compra Assistida</h3>
+          <p class="card-desc">Aquisição rápida de moradias para reacomodação de famílias vulneráveis atingidas por situação de calamidade pública.</p>
+          <a href="#" class="card-link">Ver Diretrizes ➔</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Seção 2: Portal de Normativos (Cream Theme - Contraste Floema) -->
+  <section class="section-cream" id="normativos">
+    <div class="section-header reveal">
+      <span class="section-subtitle">Transparência & Legislação</span>
+      <h2 class="section-title">Portal de Consulta de Normativos</h2>
+    </div>
+
+    <div class="floema-grid">
+      <div class="floema-card reveal reveal-delay-1">
+        <div class="card-content">
+          <span class="card-tag">Portarias e Atos</span>
+          <h3 class="card-title">Base Jurídica da SNH</h3>
+          <p class="card-desc">Buscador avançado de normativos inspirado no Portal da Presidência e Diário Oficial da União (DOU).</p>
+          <a href="#" class="card-link">Consultar Portarias ➔</a>
+        </div>
+      </div>
+
+      <div class="floema-card reveal reveal-delay-2">
+        <div class="card-content">
+          <span class="card-tag">Critérios Operacionais</span>
+          <h3 class="card-title">Portaria MCID nº 488/2025</h3>
+          <p class="card-desc">Estabelece as metas de propostas e diretrizes de contratação de empreendimentos na linha FAR.</p>
+          <a href="https://www.in.gov.br/en/web/dou/-/portaria-mcid-n-488-de-19-de-maio-de-2025-630689873" target="_blank" class="card-link">Ler no DOU ➔</a>
+        </div>
+      </div>
+
+      <div class="floema-card reveal reveal-delay-3">
+        <div class="card-content">
+          <span class="card-tag">Seleção de Famílias</span>
+          <h3 class="card-title">Portaria MCID nº 738/2024</h3>
+          <p class="card-desc">Regulamenta os procedimentos e prioridades para seleção de beneficiários no âmbito do MCMV-FAR.</p>
+          <a href="#" class="card-link">Acessar Regras ➔</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Seção 3: Diversidade & Universalização (Cream Theme Extended) -->
+  <section class="section-cream" style="padding-top: 0;" id="universalidade">
+    <div class="diversity-showcase reveal">
+      <div class="diversity-info">
+        <span class="section-subtitle">Moradia para Todos</span>
+        <h2>Um programa inclusivo e universal</h2>
+        <p>A política habitacional brasileira é desenvolvida para refletir a diversidade da nossa população. Priorizamos a inclusão social, oferecendo atendimento especializado para famílias brasileiras em todos os seus espectros e especificidades.</p>
+        <div class="pill-list">
+          <span class="pill-item">👩‍👧 Prioridade para Chefia Feminina</span>
+          <span class="pill-item">♿ Unidades Acessíveis (PCD)</span>
+          <span class="pill-item">👵 Atendimento Prioritário ao Idoso</span>
+          <span class="pill-item">🌳 Modalidades Urbana e Rural</span>
+        </div>
+      </div>
+
+      <!-- Mosaico com Imagens Inclusivas de Alta Qualidade -->
+      <div class="diversity-mosaic">
+        <div class="mosaic-item"><img src="https://images.unsplash.com/photo-1542037104857-ffbb0b9152fb?q=80&w=500&auto=format&fit=crop" alt="Família feliz"></div>
+        <div class="mosaic-item"><img src="https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?q=80&w=500&auto=format&fit=crop" alt="Mãe e filho"></div>
+        <div class="mosaic-item"><img src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=500&auto=format&fit=crop" alt="Avós e netos"></div>
+        <div class="mosaic-item"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=500&auto=format&fit=crop" alt="Pessoas sorrindo"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner Final (Dark Accent) -->
+  <section class="section-dark" id="simulador">
+    <div class="cta-banner reveal">
+      <h2>Pronto para dar o primeiro passo?</h2>
+      <p>Simule as condições de financiamento do seu futuro imóvel e descubra o valor do subsídio governamental disponível para a sua família.</p>
+      <div class="cta-buttons">
+        <a href="https://www.caixa.gov.br" target="_blank" class="btn-floema-gold">Simular Financiamento CAIXA</a>
+        <a href="#solucoes" class="btn-floema-outline">Ver Todas as Modalidades</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rodapé Institucional -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h4>Portal da Habitação</h4>
+        <p>Secretaria Nacional de Habitação<br>Ministério das Cidades — Governo Federal</p>
+      </div>
+      <div class="footer-links">
+        <h5>Programas</h5>
+        <ul>
+          <li><a href="#mcmv">Minha Casa Minha Vida</a></li>
+          <li><a href="#imoveis">Imóveis à Venda Caixa</a></li>
+          <li><a href="#compra-assistida">Compra Assistida</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h5>Transparência</h5>
+        <ul>
+          <li><a href="#normativos">Portal de Normativos</a></li>
+          <li><a href="#">Base Jurídica SNH</a></li>
+          <li><a href="#">Diário Oficial da União</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Desenvolvido para acompanhamento das Metas de Monitoramento — SNH / MCID</p>
+    </div>
+  </footer>
+
+  <!-- Scripts: Scroll Reveal & Busca Dinâmica -->
+  <script>
+    // 1. Mudança no Header ao Rolar (Scroll Effect)
+    const mainHeader = document.getElementById('mainHeader');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        mainHeader.classList.add('scrolled');
+      } else {
+        mainHeader.classList.remove('scrolled');
+      }
+    });
+
+    // 2. Scroll Reveal Animations (Intersection Observer)
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    revealElements.forEach(el => observer.observe(el));
+
+    // 3. Base de Dados da Busca Inteligente
+    const dadosHeroBusca = [
+      { titulo: "Imóveis à Venda CAIXA", categoria: "Imóveis", link: "https://www.caixa.gov.br/voce/habitacao/imoveis-venda/Paginas/default.aspx" },
+      { titulo: "Minha Casa Minha Vida - Regras e Subsídios", categoria: "MCMV", link: "https://www.caixa.gov.br/voce/habitacao/minha-casa-minha-vida/paginas/default.aspx" },
+      { titulo: "Compra Assistida - Atendimento de Calamidades", categoria: "Emergência", link: "#compra-assistida" },
+      { titulo: "Portaria MCID nº 488/2025 (Metas FAR)", categoria: "Normativos", link: "https://www.in.gov.br/en/web/dou/-/portaria-mcid-n-488-de-19-de-maio-de-2025-630689873" },
+      { titulo: "Portaria MCID nº 738/2024 (Seleção de Famílias)", categoria: "Normativos", link: "#normativos" },
+      { titulo: "Simulador de Financiamento Habitacional", categoria: "Ferramenta", link: "#simulador" }
+    ];
+
+    const heroInput = document.getElementById('heroSearchInput');
+    const heroSuggestions = document.getElementById('heroSuggestions');
+
+    heroInput.addEventListener('input', function() {
+      const val = this.value.toLowerCase().trim();
+      if (val.length < 2) {
+        heroSuggestions.style.display = 'none';
+        return;
+      }
+
+      const res = dadosHeroBusca.filter(item => 
+        item.titulo.toLowerCase().includes(val) || 
+        item.categoria.toLowerCase().includes(val)
+      );
+
+      if (res.length === 0) {
+        heroSuggestions.innerHTML = `
+          <div class="hero-suggestion-item">
+            <span class="sug-title">Nenhum resultado encontrado</span>
+          </div>`;
+      } else {
+        heroSuggestions.innerHTML = res.map(item => `
+          <div class="hero-suggestion-item" onclick="abrirLinkHero('${item.link}')">
+            <span class="sug-title">${item.titulo}</span>
+            <span class="sug-cat">${item.categoria}</span>
+          </div>
+        `).join('');
+      }
+
+      heroSuggestions.style.display = 'block';
+    });
+
+    function abrirLinkHero(url) {
+      if (url.startsWith('http')) {
+        window.open(url, '_blank');
+      } else {
+        document.querySelector(url).scrollIntoView({ behavior: 'smooth' });
+      }
+      heroSuggestions.style.display = 'none';
+    }
+
+    function executarBuscaHero() {
+      if (heroInput.value.trim() !== '') {
+        heroInput.dispatchEvent(new Event('input'));
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.search-hero-wrapper')) {
+        heroSuggestions.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

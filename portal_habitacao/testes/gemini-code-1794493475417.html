@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal da Habitação - Minha Casa Minha Vida</title>
+
+  <!-- Importação das fontes equivalentes do Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@700&family=Syne:wght@700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .hero-card-1 {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background-color: #023b5e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 40px 20px 80px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Cor amarela padrão do layout */
+    .text-yellow {
+      color: #febe10;
+    }
+
+    /* 1. Bola Colorida (Topo Direito) */
+    .decor-bola {
+      position: absolute;
+      top: 0;
+      right: 7%;
+      width: 280px;
+      height: auto;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* 2. Faixa Azul Inferior */
+    .decor-barra-azul {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      background-color: #0072bc;
+      z-index: 1;
+    }
+
+    /* 3. Forma Geométrica Verde/Amarela (Inferior Esquerdo) */
+    .decor-triangulo-verde {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 340px;
+      height: 51%;
+      background: linear-gradient(135deg, #62a73b 0%, #0b6e35 100%);
+      clip-path: polygon(0 0, 100% 100%, 0 100%);
+      z-index: 2;
+    }
+
+    .decor-ponta-amarela {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 18%;
+      background-color: #febe10;
+    }
+
+    /* Conteúdo Principal Centralizado */
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    /* Logo MCMV */
+    .hero-logo {
+      width: 170px;
+      height: auto;
+      margin-bottom: 18px;
+    }
+
+    /* Texto: Portal da Habitação (Equivalente Heading Now 91) */
+    .hero-title-portal {
+      font-family: 'Archivo Black', sans-serif;
+      color: #febe10;
+      font-size: clamp(2.1rem, 4.3vw, 4rem);
+      font-weight: 400;
+      line-height: 1.05;
+      margin: 0 0 42px 0;
+      letter-spacing: 0.01em;
+    }
+
+    /* Caixa de Pesquisa */
+    .search-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #ffffff;
+      border-radius: 50px;
+      padding: 6px 8px 6px 26px;
+      width: 100%;
+      max-width: 980px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      margin-bottom: 56px;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      flex: 1;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111111;
+      background: transparent;
+    }
+
+    .search-box input::placeholder {
+      color: #111111;
+      opacity: 1;
+    }
+
+    .search-box button {
+      background-color: #0072bc;
+      color: #ffffff;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 28px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .search-box button:hover {
+      background-color: #005a96;
+    }
+
+    /* Texto Principal: Minha Casa, voltou para a minha vida. (Equivalente Heading Now 91) */
+    .hero-headline {
+      font-family: 'Archivo Black', sans-serif;
+      color: #ffffff;
+      font-size: clamp(2.6rem, 5.8vw, 5.4rem);
+      font-weight: 400;
+      line-height: 1.02;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+
+    /* Texto Inferior Direito: E voltou no novo momento do país. (Equivalente Gatwick) */
+    .hero-tagline {
+      position: absolute;
+      bottom: 18px;
+      right: 28px;
+      z-index: 3;
+      font-family: 'Syne', sans-serif;
+      color: #ffffff;
+      font-size: clamp(1.1rem, 1.95vw, 1.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0;
+      text-align: left;
+    }
+
+    /* Ajustes para telas menores (Responsividade) */
+    @media (max-width: 768px) {
+      .decor-bola {
+        width: 150px;
+        right: 2%;
+      }
+
+      .decor-triangulo-verde {
+        width: 140px;
+        height: 30%;
+      }
+
+      .hero-tagline {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        margin-top: 40px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero-card-1">
+    <!-- Elemento decorativo superior direito -->
+    <img src="bola-colorida.png" alt="" class="decor-bola" aria-hidden="true" />
+
+    <!-- Elementos geométricos inferiores -->
+    <div class="decor-barra-azul" aria-hidden="true"></div>
+    <div class="decor-triangulo-verde" aria-hidden="true">
+      <div class="decor-ponta-amarela"></div>
+    </div>
+
+    <!-- Conteúdo Central -->
+    <div class="hero-content">
+      <img src="logo-MCMV.png" alt="Logo Minha Casa Minha Vida" class="hero-logo" />
+
+      <h1 class="hero-title-portal">Portal da Habitação</h1>
+
+      <!-- Caixa de pesquisa (substitua pelo código da sua caixa atual se já possuir scripts atrelados) -->
+      <form class="search-box" role="search">
+        <input 
+          type="text" 
+          placeholder="Busque por Faixa 1, Imóveis Caixa, Portaria 488, Compra Assistida..." 
+          aria-label="Campo de busca"
+        />
+        <button type="submit">Buscar</button>
+      </form>
+
+      <h2 class="hero-headline">
+        Minha Casa,<br />
+        <span class="text-yellow">voltou para</span><br />
+        <span class="text-yellow">a</span> minha vida.
+      </h2>
+    </div>
+
+    <!-- Assinatura inferior direita -->
+    <p class="hero-tagline">
+      E voltou <span class="text-yellow">no novo</span><br />
+      momento do país.
+    </p>
+  </section>
+
+</body>
+</html>

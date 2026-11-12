@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal da Habitação — Ministério das Cidades / Minha Casa, Minha Vida</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --gov-blue: #1351b4;
+      --gov-blue-dark: #0c326f;
+      --gov-blue-vivid: #0b439c;
+      --caixa-orange: #f37021;
+      --caixa-blue: #005ca9;
+      --gov-gray-10: #f8f9fa;
+      --gov-gray-20: #edf2f7;
+      --gov-gray-60: #718096;
+      --gov-gray-80: #2d3748;
+      --gov-border: #cbd5e0;
+      --gov-yellow: #ffcd07;
+      --gov-green: #138e3d;
+      --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    body {
+      background-color: #f4f6f9;
+      color: var(--gov-gray-80);
+      line-height: 1.6;
+    }
+
+    /* Topo Padrão Governo Federal */
+    .barra-govbr {
+      background-color: var(--gov-blue-dark);
+      color: white;
+      padding: 0.4rem 2rem;
+      font-size: 0.82rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .barra-govbr a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .barra-govbr a:hover {
+      text-decoration: underline;
+    }
+
+    /* Cabeçalho do Portal */
+    header {
+      background-color: white;
+      border-bottom: 2px solid var(--gov-border);
+      padding: 1.2rem 2rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+
+    .header-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .gov-logo-img {
+      height: 38px;
+      width: auto;
+    }
+
+    .brand-title {
+      border-left: 2px solid var(--gov-border);
+      padding-left: 1.2rem;
+    }
+
+    .brand-title h1 {
+      font-size: 1.3rem;
+      color: var(--gov-blue-dark);
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .brand-title span {
+      font-size: 0.88rem;
+      color: var(--gov-gray-60);
+      font-weight: 600;
+    }
+
+    .caixa-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--gov-gray-10);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      border: 1px solid var(--gov-border);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--caixa-blue);
+    }
+
+    .caixa-badge span.orange {
+      color: var(--caixa-orange);
+    }
+
+    /* Menu de Navegação */
+    nav.nav-principal {
+      background: linear-gradient(90deg, var(--gov-blue-dark) 0%, var(--gov-blue) 100%);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      padding: 0 1.5rem;
+      overflow-x: auto;
+    }
+
+    .nav-container a {
+      color: white;
+      text-decoration: none;
+      padding: 1rem 1.4rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .nav-container a:hover, .nav-container a.active {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-bottom: 4px solid var(--gov-yellow);
+    }
+
+    /* Hero Banner - Inclusivo & Acolhedor */
+    .hero-banner {
+      background: linear-gradient(rgba(12, 50, 111, 0.78), rgba(19, 81, 180, 0.78)), 
+                  url('https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=1600&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 4rem 2rem 5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      background-color: var(--gov-yellow);
+      color: var(--gov-blue-dark);
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .hero-content h2 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 0.8rem;
+    }
+
+    .hero-content p {
+      font-size: 1.15rem;
+      opacity: 0.95;
+      font-weight: 400;
+      margin-bottom: 2rem;
+    }
+
+    /* Módulo de Busca Centralizado e Inteligente */
+    .search-section {
+      max-width: 850px;
+      margin: -2.5rem auto 0;
+      position: relative;
+      z-index: 10;
+      padding: 0 1rem;
+    }
+
+    .search-card {
+      background: white;
+      padding: 1.5rem 2rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border: 2px solid #e2e8f0;
+    }
+
+    .search-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--gov-blue-dark);
+      margin-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .search-box-wrapper {
+      position: relative;
+    }
+
+    .search-input-container {
+      display: flex;
+      align-items: center;
+      border: 2px solid var(--gov-blue);
+      border-radius: 30px;
+      padding: 0.3rem 0.5rem 0.3rem 1.2rem;
+      background: white;
+      transition: all 0.2s;
+    }
+
+    .search-input-container:focus-within {
+      box-shadow: 0 0 0 4px rgba(19, 81, 180, 0.2);
+    }
+
+    .search-input-container input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 1.05rem;
+      color: var(--gov-gray-80);
+      padding: 0.5rem 0;
+    }
+
+    .search-btn {
+      background: linear-gradient(135deg, var(--caixa-orange) 0%, #d9530f 100%);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.8rem;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .search-btn:hover {
+      transform: scale(1.03);
+      background: #e05e10;
+    }
+
+    /* Sugestões Autocompletar / Resultados Instantâneos */
+    .search-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      margin-top: 0.5rem;
+      border: 1px solid var(--gov-border);
+      max-height: 380px;
+      overflow-y: auto;
+      display: none;
+      z-index: 100;
+    }
+
+    .suggestion-item {
+      padding: 0.9rem 1.2rem;
+      border-bottom: 1px solid #edf2f7;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.15s;
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+      background-color: #f0f7ff;
+    }
+
+    .suggestion-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .suggestion-title {
+      font-weight: 700;
+      color: var(--gov-blue-vivid);
+      font-size: 0.95rem;
+    }
+
+    .suggestion-desc {
+      font-size: 0.82rem;
+      color: var(--gov-gray-60);
+    }
+
+    .suggestion-badge {
+      background-color: var(--gov-gray-20);
+      color: var(--gov-blue-dark);
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    /* Quick Tags */
+    .quick-tags {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+    }
+
+    .quick-tags span {
+      font-weight: 700;
+      color: var(--gov-gray-60);
+    }
+
+    .tag-chip {
+      background-color: #f0f4f9;
+      color: var(--gov-blue-vivid);
+      border: 1px solid #d0e1f9;
+      padding: 0.25rem 0.8rem;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .tag-chip:hover {
+      background-color: var(--gov-blue-vivid);
+      color: white;
+    }
+
+    /* Conteúdo Principal */
+    .container {
+      max-width: 1280px;
+      margin: 3.5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title h3 {
+      font-size: 1.8rem;
+      color: var(--gov-blue-dark);
+      font-weight: 800;
+    }
+
+    .section-title p {
+      color: var(--gov-gray-60);
+      font-size: 1.05rem;
+    }
+
+    /* Grid de Módulos (Baseado nos Portais da Caixa) */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      border: 1px solid #e2e8f0;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-img-wrapper {
+      height: 170px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+
+    .feature-card:hover .card-img-wrapper img {
+      transform: scale(1.06);
+    }
+
+    .card-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--caixa-orange);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.7rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .card-body {
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-body h4 {
+      font-size: 1.15rem;
+      color: var(--gov-blue-dark);
+      margin-bottom: 0.6rem;
+      font-weight: 700;
+    }
+
+    .card-body p {
+      font-size: 0.9rem;
+      color: var(--gov-gray-60);
+      margin-bottom: 1.2rem;
+      flex: 1;
+    }
+
+    .card-btn {
+      display: inline-block;
+      text-align: center;
+      background-color: var(--gov-blue-vivid);
+      color: white;
+      text-decoration: none;
+      padding: 0.65rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .card-btn:hover {
+      background-color: var(--gov-blue-dark);
+    }
+
+    /* Seção de Diversidade, Inclusão e Universalidade */
+    .diversity-section {
+      background-color: white;
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      margin: 4rem 0;
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--gov-border);
+    }
+
+    .diversity-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    @media (max-width: 850px) {
+      .diversity-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .diversity-text h3 {
+      font-size: 2rem;
+      color: var(--gov-blue-dark);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .diversity-text p {
+      font-size: 1.05rem;
+      color: var(--gov-gray-80);
+      margin-bottom: 1.2rem;
+    }
+
+    .diversity-badges {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .badge-item {
+      background: var(--gov-gray-10);
+      border: 1px solid var(--gov-border);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--gov-blue-vivid);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .diversity-gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .gallery-img-box {
+      border-radius: 10px;
+      overflow: hidden;
+      height: 160px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .gallery-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .gallery-img-box:hover img {
+      transform: scale(1.08);
+    }
+
+    /* Faixa de Atendimento & Simulador */
+    .action-banner {
+      background: linear-gradient(135deg, var(--caixa-blue) 0%, var(--gov-blue-dark) 100%);
+      color: white;
+      border-radius: 16px;
+      padding: 3.5rem 2rem;
+      text-align: center;
+      box-shadow: var(--card-shadow);
+    }
+
+    .action-banner h3 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      margin-bottom: 0.8rem;
+    }
+
+    .action-banner p {
+      font-size: 1.1rem;
+      max-width: 750px;
+      margin: 0 auto 2rem;
+      opacity: 0.95;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-action-primary {
+      background: var(--caixa-orange);
+      color: white;
+      padding: 0.9rem 2rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(243, 112, 33, 0.4);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn-action-primary:hover {
+      background: #e05e10;
+      transform: translateY(-2px);
+    }
+
+    .btn-action-secondary {
+      background: white;
+      color: var(--caixa-blue);
+      padding: 0.9rem 2rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn-action-secondary:hover {
+      background: var(--gov-gray-10);
+      transform: translateY(-2px);
+    }
+
+    /* Rodapé Institucional */
+    footer {
+      background-color: var(--gov-blue-dark);
+      color: white;
+      padding: 3rem 2rem 1.5rem;
+      margin-top: 5rem;
+    }
+
+    .footer-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .footer-col h5 {
+      font-size: 1.05rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      color: var(--gov-yellow);
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col ul li {
+      margin-bottom: 0.6rem;
+    }
+
+    .footer-col ul a {
+      color: #cbd5e0;
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+
+    .footer-col ul a:hover {
+      color: white;
+    }
+
+    .footer-bottom {
+      max-width: 1280px;
+      margin: 1.5rem auto 0;
+      text-align: center;
+      font-size: 0.82rem;
+      color: #a0aec0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra do Governo Federal -->
+  <div class="barra-govbr">
+    <a href="https://www.gov.br" target="_blank">🇧🇷 Brasil / gov.br</a>
+    <span>Secretaria Nacional de Habitação — Ministério das Cidades</span>
+  </div>
+
+  <!-- Cabeçalho Principal -->
+  <header>
+    <div class="header-container">
+      <div class="brand-section">
+        <img src="https://barra.sistema.gov.br/v1/assets/govbr.webp" alt="gov.br" class="gov-logo-img">
+        <div class="brand-title">
+          <h1>Portal da Habitação</h1>
+          <span>Programa Minha Casa, Minha Vida</span>
+        </div>
+      </div>
+      <div class="caixa-badge">
+        <span>Parceira Oficial:</span>
+        <span class="orange">CAIXA</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navegação Principal -->
+  <nav class="nav-principal">
+    <div class="nav-container">
+      <a href="#" class="active">🏠 Início</a>
+      <a href="#imoveis">🏘️ Imóveis à Venda</a>
+      <a href="#minha-casa">🔑 Minha Casa, Minha Vida</a>
+      <a href="#compra-assistida">🛡️ Compra Assistida</a>
+      <a href="#normativos">📑 Portal de Normativos</a>
+      <a href="#simulador">🧮 Simulador de Financiamento</a>
+    </div>
+  </nav>
+
+  <!-- Hero Banner com Mensagem Inclusiva -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <span class="hero-tag">Direito à Moradia Dignidade para Todos</span>
+      <h2>A casa própria mais perto da sua família</h2>
+      <p>Um agregador completo de serviços habitacionais projetado para garantir acesso simples, rápido e transparente a toda a população brasileira.</p>
+    </div>
+  </section>
+
+  <!-- Campo de Busca Centralizado e Inteligente -->
+  <section class="search-section">
+    <div class="search-card">
+      <div class="search-title">
+        🔍 O que você procura hoje no Portal da Habitação?
+      </div>
+      <div class="search-box-wrapper">
+        <div class="search-input-container">
+          <input type="text" id="searchInput" placeholder="Digite um termo (ex: Compra Assistida, Leilão, Faixa 1, Portaria 488, Simulação)..." autocomplete="off">
+          <button class="search-btn" onclick="executarBusca()">
+            Buscar
+          </button>
+        </div>
+
+        <!-- Autocompletar / Sugestões Dinâmicas -->
+        <div class="search-suggestions" id="searchSuggestions"></div>
+      </div>
+
+      <!-- Quick Tags -->
+      <div class="quick-tags">
+        <span>Mais buscados:</span>
+        <button class="tag-chip" onclick="selecionarTag('Imóveis à Venda Caixa')">Imóveis Caixa</button>
+        <button class="tag-chip" onclick="selecionarTag('Compra Assistida')">Compra Assistida</button>
+        <button class="tag-chip" onclick="selecionarTag('Minha Casa Minha Vida Faixa 1')">MCMV Faixa 1</button>
+        <button class="tag-chip" onclick="selecionarTag('Simulador de Habitação')">Simulador</button>
+        <button class="tag-chip" onclick="selecionarTag('Portarias FAR')">Normativos FAR</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grade de Módulos e Funcionalidades Agregadas -->
+  <main class="container">
+    <div class="section-title">
+      <h3>Principais Serviços e Módulos</h3>
+      <p>Tudo o que você precisa sobre habitação em um só lugar</p>
+    </div>
+
+    <div class="features-grid">
+      
+      <!-- Card 1: Imóveis Caixa -->
+      <div class="feature-card" id="imoveis">
+        <div class="card-img-wrapper">
+          <span class="card-tag">Oportunidades</span>
+          <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=600&auto=format&fit=crop" alt="Casa aconchegante familiar">
+        </div>
+        <div class="card-body">
+          <h4>Imóveis à Venda CAIXA</h4>
+          <p>Encontre casas e apartamentos usados com descontos especiais, leilões e condições facilitadas de financiamento.</p>
+          <a href="https://www.caixa.gov.br/voce/habitacao/imoveis-venda/Paginas/default.aspx" target="_blank" class="card-btn">Buscar Imóveis da Caixa</a>
+        </div>
+      </div>
+
+      <!-- Card 2: Minha Casa Minha Vida -->
+      <div class="feature-card" id="minha-casa">
+        <div class="card-img-wrapper">
+          <span class="card-tag">Subsídios</span>
+          <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600&auto=format&fit=crop" alt="Chaves da casa nova em mãos">
+        </div>
+        <div class="card-body">
+          <h4>Minha Casa, Minha Vida</h4>
+          <p>Conheça as regras para famílias de baixa renda (Faixas 1, 2 e 3), subsídios do governo e formas de cadastramento.</p>
+          <a href="https://www.caixa.gov.br/voce/habitacao/minha-casa-minha-vida/paginas/default.aspx" target="_blank" class="card-btn">Saiba Como Participar</a>
+        </div>
+      </div>
+
+      <!-- Card 3: Compra Assistida & Calamidades -->
+      <div class="feature-card" id="compra-assistida">
+        <div class="card-img-wrapper">
+          <span class="card-tag">Emergência</span>
+          <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=600&auto=format&fit=crop" alt="Família unida e apoiada">
+        </div>
+        <div class="card-body">
+          <h4>Compra Assistida</h4>
+          <p>Reacomodação célere e aquisição de imóveis para famílias atingidas por emergências ou calamidades públicas.</p>
+          <a href="#" class="card-btn" style="background-color: var(--caixa-orange);">Acessar Compra Assistida</a>
+        </div>
+      </div>
+
+      <!-- Card 4: Portal de Normativos -->
+      <div class="feature-card" id="normativos">
+        <div class="card-img-wrapper">
+          <span class="card-tag">Transparência</span>
+          <img src="https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=600&auto=format&fit=crop" alt="Documentos oficiais e leis">
+        </div>
+        <div class="card-body">
+          <h4>Portal de Normativos</h4>
+          <p>Consulte portarias, leis, decretos e seleções do MCMV com busca integrada no estilo Portal da Presidência + DOU.</p>
+          <a href="#" class="card-btn">Consultar Legislação</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Seção de Diversidade, Inclusão e Universalização -->
+    <section class="diversity-section">
+      <div class="diversity-container">
+        <div class="diversity-text">
+          <h3>Um programa universal para todas as famílias brasileiras</h3>
+          <p>O Programa Minha Casa, Minha Vida foi formulado para atender a pluralidade da nossa população. Garantimos atendimento prioritário para mulheres chefes de família, pessoas com deficiência (PCD), idosos e populações em situação de vulnerabilidade.</p>
+          <div class="diversity-badges">
+            <div class="badge-item">👩‍👧 Prioridade Chefia Feminina</div>
+            <div class="badge-item">♿ Acessibilidade Integrada</div>
+            <div class="badge-item">👵 Proteção ao Idoso</div>
+            <div class="badge-item">🌳 Atendimento Urbano e Rural</div>
+          </div>
+        </div>
+
+        <!-- Galeria Ilustrativa de Diversidade de Famílias -->
+        <div class="diversity-gallery">
+          <div class="gallery-img-box">
+            <img src="https://images.unsplash.com/photo-1542037104857-ffbb0b9152fb?q=80&w=500&auto=format&fit=crop" alt="Família sorridente com criança">
+          </div>
+          <div class="gallery-img-box">
+            <img src="https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?q=80&w=500&auto=format&fit=crop" alt="Mãe e filho felizes">
+          </div>
+          <div class="gallery-img-box">
+            <img src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=500&auto=format&fit=crop" alt="Avós e netos reunidos em casa">
+          </div>
+          <div class="gallery-img-box">
+            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=500&auto=format&fit=crop" alt="Grupo diversificado de pessoas felizes">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Banner de Ação - Simulador Habitacional -->
+    <section class="action-banner" id="simulador">
+      <h3>Faça a simulação do seu imóvel</h3>
+      <p>Descubra em poucos passos qual a faixa do Minha Casa Minha Vida ideal para a sua renda familiar e veja o valor aproximado da sua prestação.</p>
+      <div class="action-buttons">
+        <a href="https://www.caixa.gov.br" target="_blank" class="btn-action-primary">Simular Financiamento CAIXA</a>
+        <a href="#minha-casa" class="btn-action-secondary">Ver Tabela de Renda</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Rodapé Institucional -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <h5>Portal da Habitação</h5>
+        <ul>
+          <li><a href="#">Sobre o Portal</a></li>
+          <li><a href="#">Secretaria Nacional de Habitação</a></li>
+          <li><a href="#">Ministério das Cidades</a></li>
+          <li><a href="#">Notícias e Agenda</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Programas Sociais</h5>
+        <ul>
+          <li><a href="#">MCMV Urbano - FAR</a></li>
+          <li><a href="#">MCMV Rural</a></li>
+          <li><a href="#">Reforma Casa Brasil</a></li>
+          <li><a href="#">Compra Assistida</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Canais de Atendimento</h5>
+        <ul>
+          <li><a href="#">Atendimento CAIXA: 0800 726 0101</a></li>
+          <li><a href="#">Fale Conosco MCID</a></li>
+          <li><a href="#">Ouvidoria do Governo Federal</a></li>
+          <li><a href="#">Perguntas Frequentes</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Secretaria Nacional de Habitação | Ministério das Cidades — Governo Federal do Brasil</p>
+    </div>
+  </footer>
+
+  <!-- Script da Busca Interativa em Tempo Real -->
+  <script>
+    // Base de Conhecimento Agregada para a Busca Inteligente
+    const dadosBusca = [
+      {
+        titulo: "Imóveis à Venda Caixa (Leilão e Adjudicados)",
+        descricao: "Casas e apartamentos usados com descontos e financiamento fácil",
+        categoria: "Imóveis",
+        link: "https://www.caixa.gov.br/voce/habitacao/imoveis-venda/Paginas/default.aspx"
+      },
+      {
+        titulo: "Minha Casa, Minha Vida - Faixa 1",
+        descricao: "Subsídios de até 95% para famílias com renda até R$ 2.640,00",
+        categoria: "Programa MCMV",
+        link: "https://www.caixa.gov.br/voce/habitacao/minha-casa-minha-vida/paginas/default.aspx"
+      },
+      {
+        titulo: "Compra Assistida - Reacomodação Emergencial",
+        descricao: "Compra de imóveis para famílias afetadas por calamidades e emergências",
+        categoria: "Calamidades",
+        link: "#compra-assistida"
+      },
+      {
+        titulo: "Simulador de Financiamento Habitacional",
+        descricao: "Calcule parcelas, subsídio do governo e uso do FGTS",
+        categoria: "Ferramenta",
+        link: "https://www.caixa.gov.br"
+      },
+      {
+        titulo: "Portaria MCID nº 488/2025 - Regras do FAR",
+        descricao: "Diretrizes e metas de apresentação de propostas MCMV-FAR",
+        categoria: "Normativos",
+        link: "#normativos"
+      },
+      {
+        titulo: "Trabalho Social no Minha Casa Minha Vida",
+        descricao: "Acompanhamento comunitário, qualificações e projetos sociais",
+        categoria: "Social",
+        link: "#"
+      },
+      {
+        titulo: "Atendimento para População em Situação de Rua",
+        descricao: "Portaria Conjunta MCID/MDS para moradia social inclusiva",
+        categoria: "Inclusão",
+        link: "#"
+      },
+      {
+        titulo: "Programa Reforma Casa Brasil",
+        descricao: "Financiamento e subvenção para melhorias e reformas habitacionais",
+        categoria: "Reformas",
+        link: "#"
+      }
+    ];
+
+    const searchInput = document.getElementById('searchInput');
+    const searchSuggestions = document.getElementById('searchSuggestions');
+
+    // Evento de digitação na caixa de busca
+    searchInput.addEventListener('input', function() {
+      const termo = this.value.toLowerCase().trim();
+
+      if (termo.length < 2) {
+        searchSuggestions.style.display = 'none';
+        return;
+      }
+
+      // Filtrar a base de conhecimentos
+      const resultados = dadosBusca.filter(item => 
+        item.titulo.toLowerCase().includes(termo) ||
+        item.descricao.toLowerCase().includes(termo) ||
+        item.categoria.toLowerCase().includes(termo)
+      );
+
+      exibirResultados(resultados);
+    });
+
+    function exibirResultados(resultados) {
+      if (resultados.length === 0) {
+        searchSuggestions.innerHTML = `
+          <div class="suggestion-item">
+            <div class="suggestion-text">
+              <span class="suggestion-title">Nenhum resultado encontrado</span>
+              <span class="suggestion-desc">Tente termos como "Leilão", "Faixa 1", "Portaria" ou "Simulação"</span>
+            </div>
+          </div>
+        `;
+      } else {
+        searchSuggestions.innerHTML = resultados.map(item => `
+          <div class="suggestion-item" onclick="abrirLink('${item.link}')">
+            <div class="suggestion-text">
+              <span class="suggestion-title">${item.titulo}</span>
+              <span class="suggestion-desc">${item.descricao}</span>
+            </div>
+            <span class="suggestion-badge">${item.categoria}</span>
+          </div>
+        `).join('');
+      }
+
+      searchSuggestions.style.display = 'block';
+    }
+
+    function abrirLink(url) {
+      if (url.startsWith('http')) {
+        window.open(url, '_blank');
+      } else {
+        const el = document.querySelector(url);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+      searchSuggestions.style.display = 'none';
+    }
+
+    function selecionarTag(termo) {
+      searchInput.value = termo;
+      searchInput.dispatchEvent(new Event('input'));
+      searchInput.focus();
+    }
+
+    function executarBusca() {
+      if (searchInput.value.trim() !== '') {
+        searchInput.dispatchEvent(new Event('input'));
+      }
+    }
+
+    // Fechar caixa de sugestões ao clicar fora
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.search-box-wrapper')) {
+        searchSuggestions.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
