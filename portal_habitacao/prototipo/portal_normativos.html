@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal da Habitação — Ministério das Cidades — gov.br</title>
+  <!-- Fonte Oficial Open Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --gov-blue-vivid: #1351b4;
+      --gov-blue-dark: #0c326f;
+      --gov-gray-10: #f8f9fa;
+      --gov-gray-20: #edf2f7;
+      --gov-gray-60: #888888;
+      --gov-gray-80: #333333;
+      --gov-border: #ccc;
+      --gov-yellow: #ffcd07;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    body {
+      background-color: #fff;
+      color: var(--gov-gray-80);
+      line-height: 1.5;
+    }
+
+    /* Barra do Governo Federal */
+    .barra-govbr {
+      background-color: var(--gov-blue-dark);
+      color: white;
+      padding: 0.4rem 2rem;
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .barra-govbr a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Cabeçalho do Ministério */
+    header {
+      background-color: white;
+      border-bottom: 1px solid var(--gov-border);
+      padding: 1rem 2rem;
+    }
+
+    .header-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    /* Imagem do gov.br ajustada */
+    .brand-logo-img {
+      height: 38px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-title {
+      border-left: 2px solid var(--gov-border);
+      padding-left: 1.2rem;
+    }
+
+    .brand-title h1 {
+      font-size: 1.15rem;
+      color: var(--gov-gray-80);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .brand-title span {
+      font-size: 0.85rem;
+      color: var(--gov-gray-60);
+    }
+
+    /* Navegação Estilo GOV.BR */
+    nav.nav-govbr {
+      background-color: var(--gov-blue-vivid);
+    }
+
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 0 2rem;
+    }
+
+    .nav-container a {
+      color: white;
+      text-decoration: none;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .nav-container a:hover, .nav-container a.active {
+      background-color: var(--gov-blue-dark);
+      border-bottom: 3px solid var(--gov-yellow);
+    }
+
+    /* Breadcrumbs */
+    .breadcrumb {
+      max-width: 1280px;
+      margin: 1rem auto 0;
+      padding: 0 2rem;
+      font-size: 0.8rem;
+      color: var(--gov-gray-60);
+    }
+
+    .breadcrumb a {
+      color: var(--gov-blue-vivid);
+      text-decoration: none;
+    }
+
+    /* Layout Principal */
+    .main-container {
+      max-width: 1280px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 880px) {
+      .main-container {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .sidebar-filter,
+      .content-area {
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .nav-container {
+        padding: 0 0.75rem;
+      }
+
+      .nav-container a {
+        padding: 0.7rem 0.65rem;
+      }
+
+      .view-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .view-tab {
+        padding: 0.7rem 0.5rem;
+        font-size: 0.82rem;
+      }
+
+      .norma-card-header {
+        flex-wrap: wrap;
+      }
+
+      .results-info,
+      .norma-card-footer {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .search-input-group input {
+        min-width: 0;
+      }
+    }
+
+    /* Menu Lateral de Filtros */
+    .sidebar-filter {
+      background-color: var(--gov-gray-10);
+      border: 1px solid var(--gov-border);
+      border-radius: 4px;
+      padding: 1.5rem;
+      height: fit-content;
+    }
+
+    .sidebar-filter h3 {
+      font-size: 1.05rem;
+      color: var(--gov-blue-dark);
+      border-bottom: 2px solid var(--gov-blue-vivid);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.2rem;
+      font-weight: 700;
+    }
+
+    .filter-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .filter-group label.title-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--gov-gray-80);
+    }
+
+    .filter-group select, .filter-group input[type="number"] {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--gov-gray-60);
+      border-radius: 4px;
+      font-size: 0.88rem;
+      background: white;
+    }
+
+    .checkbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--gov-gray-80);
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--gov-blue-vivid);
+      cursor: pointer;
+      margin: 0;
+    }
+
+    /* Botões Padrão GOV.BR */
+    .br-button {
+      display: inline-block;
+      width: 100%;
+      padding: 0.65rem 1rem;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .br-button.primary {
+      background-color: var(--gov-blue-vivid);
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .br-button.primary:hover {
+      background-color: var(--gov-blue-dark);
+    }
+
+    .br-button.secondary {
+      background-color: transparent;
+      color: var(--gov-blue-vivid);
+      border: 1px solid var(--gov-blue-vivid);
+    }
+
+    .br-button.secondary:hover {
+      background-color: var(--gov-gray-20);
+    }
+
+    /* Área de Conteúdo */
+    .content-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .search-panel {
+      background-color: var(--gov-gray-10);
+      border: 1px solid var(--gov-border);
+      border-radius: 4px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .search-input-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .search-input-group input {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--gov-gray-60);
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    .tag-container {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+    }
+
+    .tag-container span {
+      font-weight: 700;
+      color: var(--gov-gray-60);
+    }
+
+    .gov-chip {
+      background-color: white;
+      color: var(--gov-blue-vivid);
+      border: 1px solid var(--gov-blue-vivid);
+      padding: 0.2rem 0.7rem;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .gov-chip:hover {
+      background-color: var(--gov-blue-vivid);
+      color: white;
+    }
+
+    .view-tabs {
+      display: flex;
+      grid-column: 1 / -1;
+      border-bottom: 2px solid var(--gov-blue-vivid);
+    }
+
+    .view-tab {
+      padding: 0.8rem 1.2rem;
+      border: 1px solid var(--gov-border);
+      border-bottom: 0;
+      background: var(--gov-gray-10);
+      color: var(--gov-blue-dark);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .view-tab[aria-pressed="true"] {
+      border-color: var(--gov-blue-vivid);
+      background: var(--gov-blue-vivid);
+      color: white;
+    }
+
+    .view-tab:focus-visible {
+      outline: 3px solid var(--gov-yellow);
+      outline-offset: 2px;
+      z-index: 1;
+    }
+
+    .main-container[data-view="map"] .sidebar-filter {
+      display: none;
+    }
+
+    .main-container[data-view="map"] .content-area {
+      grid-column: 1 / -1;
+    }
+
+    #searchView[hidden],
+    #mapView[hidden] {
+      display: none;
+    }
+
+    .results-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+      color: var(--gov-gray-60);
+      border-bottom: 1px solid var(--gov-border);
+      padding-bottom: 0.5rem;
+    }
+
+    .norma-card {
+      background: white;
+      border: 1px solid var(--gov-border);
+      border-radius: 4px;
+      padding: 1.2rem;
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .norma-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .gov-badge {
+      background-color: var(--gov-gray-20);
+      color: var(--gov-blue-dark);
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .norma-card-title {
+      font-size: 1.05rem;
+      color: var(--gov-blue-vivid);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .norma-card-title:hover {
+      text-decoration: underline;
+    }
+
+    .norma-card-date {
+      font-size: 0.8rem;
+      color: var(--gov-gray-60);
+    }
+
+    .norma-card-ementa {
+      font-size: 0.88rem;
+      color: var(--gov-gray-80);
+      text-align: justify;
+    }
+
+    .norma-card-footer {
+      display: flex;
+      gap: 1.2rem;
+      margin-top: 0.5rem;
+      font-size: 0.82rem;
+    }
+
+    .norma-card-footer a {
+      color: var(--gov-blue-vivid);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .norma-card-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .hierarchy-panel {
+      padding: 1.25rem;
+      border: 1px solid var(--gov-border);
+      border-left: 4px solid var(--gov-blue-vivid);
+      border-radius: 4px;
+      background: var(--gov-gray-10);
+    }
+
+    .hierarchy-panel h2 {
+      margin-bottom: 0.35rem;
+      color: var(--gov-blue-dark);
+      font-size: 1.15rem;
+    }
+
+    .hierarchy-intro,
+    .hierarchy-note {
+      color: var(--gov-gray-60);
+      font-size: 0.82rem;
+    }
+
+    .hierarchy-note {
+      margin-top: 0.75rem;
+      padding: 0.65rem;
+      border-radius: 4px;
+      background: #fff8df;
+      color: #594800;
+    }
+
+    .hierarchy-layer {
+      display: grid;
+      grid-template-columns: minmax(145px, 190px) 1fr;
+      gap: 0.85rem;
+      align-items: start;
+      margin-top: 0.85rem;
+    }
+
+    .hierarchy-layer-title {
+      padding-top: 0.4rem;
+      color: var(--gov-blue-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .hierarchy-nodes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 0.55rem;
+    }
+
+    .hierarchy-node {
+      min-height: 100%;
+      padding: 0.65rem;
+      border: 1px solid #b8c7dc;
+      border-radius: 4px;
+      background: white;
+      color: var(--gov-blue-dark);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .hierarchy-node:hover,
+    .hierarchy-node:focus-visible {
+      border-color: var(--gov-blue-vivid);
+      outline: 2px solid var(--gov-blue-vivid);
+      outline-offset: 1px;
+    }
+
+    .hierarchy-node strong,
+    .hierarchy-node span {
+      display: block;
+    }
+
+    .hierarchy-node strong {
+      font-size: 0.82rem;
+    }
+
+    .hierarchy-node span {
+      margin-top: 0.25rem;
+      color: var(--gov-gray-60);
+      font-size: 0.72rem;
+    }
+
+    .hierarchy-connector {
+      margin: 0.2rem 0 0.2rem 165px;
+      color: var(--gov-blue-vivid);
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .norma-status {
+      padding: 0.2rem 0.55rem;
+      border-radius: 12px;
+      background: #e9ecef;
+      color: #495057;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .norma-status.vigente {
+      background: #e8f5e9;
+      color: #155724;
+    }
+
+    .norma-status.emergencial {
+      background: #e7f1ff;
+      color: #0c326f;
+    }
+
+    .norma-status.revogada,
+    .norma-status.legado {
+      background: #fff3cd;
+      color: #684d03;
+    }
+
+    .norma-status.confirmar {
+      background: #e9ecef;
+      color: #495057;
+    }
+
+    .norma-card-hierarchy {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.25fr);
+      gap: 0.65rem;
+      align-items: center;
+      padding: 0.75rem;
+      border-radius: 4px;
+      background: var(--gov-gray-10);
+    }
+
+    .norma-card-hierarchy > div {
+      min-width: 0;
+    }
+
+    .hierarchy-caption {
+      display: block;
+      margin-bottom: 0.15rem;
+      color: var(--gov-gray-60);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .hierarchy-value {
+      color: var(--gov-blue-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .hierarchy-base-button,
+    .related-norm-button {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--gov-blue-vivid);
+      font: inherit;
+      font-weight: 700;
+      text-align: left;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .hierarchy-arrow {
+      color: var(--gov-blue-vivid);
+      font-weight: 700;
+    }
+
+    .norma-details {
+      margin-top: 0.2rem;
+      border-top: 1px solid var(--gov-border);
+      padding-top: 0.55rem;
+    }
+
+    .norma-details summary {
+      color: var(--gov-blue-vivid);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .norma-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.9rem;
+      margin-top: 0.75rem;
+    }
+
+    .norma-detail-grid h4 {
+      margin-bottom: 0.25rem;
+      color: var(--gov-blue-dark);
+      font-size: 0.82rem;
+    }
+
+    .norma-detail-grid p,
+    .norma-detail-grid li {
+      font-size: 0.82rem;
+    }
+
+    .norma-detail-grid ul {
+      padding-left: 1.1rem;
+    }
+
+    .norma-detail-grid li + li {
+      margin-top: 0.25rem;
+    }
+
+    .related-norms {
+      display: grid;
+      gap: 0.4rem;
+    }
+
+    .related-norm-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem 0.75rem;
+    }
+
+    .source-note {
+      margin-top: 0.5rem;
+      color: var(--gov-gray-60);
+      font-size: 0.75rem;
+    }
+
+    .pagination-bar {
+      background: var(--gov-gray-10);
+      border: 1px solid var(--gov-border);
+      border-radius: 4px;
+      padding: 0.8rem 1.2rem;
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .pagination-select {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .pagination-select select {
+      padding: 0.3rem 0.5rem;
+      border: 1px solid var(--gov-gray-60);
+      border-radius: 4px;
+    }
+
+    .pagination-buttons {
+      display: flex;
+      gap: 0.3rem;
+    }
+
+    .page-btn {
+      background: white;
+      border: 1px solid var(--gov-border);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: var(--gov-gray-80);
+    }
+
+    .page-btn.active {
+      background-color: var(--gov-blue-vivid);
+      color: white;
+      font-weight: 700;
+      border-color: var(--gov-blue-vivid);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    footer.footer-govbr {
+      background-color: var(--gov-blue-dark);
+      color: white;
+      padding: 2rem;
+      margin-top: 4rem;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    footer.footer-govbr p {
+      margin-bottom: 0.3rem;
+    }
+
+    @media (max-width: 600px) {
+      .hierarchy-layer {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.35rem;
+      }
+
+      .hierarchy-connector {
+        margin-left: 0.5rem;
+      }
+
+      .norma-card-hierarchy {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hierarchy-arrow {
+        transform: rotate(90deg);
+        justify-self: start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+    <!-- Navegação do Portal -->
+  <nav class="nav-govbr">
+    <div class="nav-container">
+      <a href="#" class="active">Consulta de Normativos</a>
+      <a href="#">Capacitações & EAD (Capacidades)</a>
+      <a href="#">Acervo Multimídia</a>
+    </div>
+  </nav>
+
+  <!-- Breadcrumb -->
+  <!--div class="breadcrumb">
+    <a href="#">Página Inicial</a> &gt; <a href="#">Acesso à Informação</a> &gt; <a href="#">Habitação</a> &gt; <strong>Base Jurídica e Normativos</strong>
+  </div-->
+
+  <!-- Conteúdo Principal -->
+  <div class="main-container">
+    <nav class="view-tabs" aria-label="Visualizações do acervo">
+      <button type="button" class="view-tab" id="searchTab" aria-controls="searchView" aria-pressed="true" onclick="alternarVisualizacao('busca')">Buscar normativos</button>
+      <button type="button" class="view-tab" id="mapTab" aria-controls="mapView" aria-pressed="false" onclick="alternarVisualizacao('mapa')">Como as normas se conectam</button>
+    </nav>
+
+    <!-- Menu Lateral -->
+    <aside class="sidebar-filter">
+      <h3>Filtros da Busca</h3>
+
+      <div class="filter-group">
+        <label class="title-label">Espécie Normativa</label>
+        <div class="checkbox-list">
+          <label class="checkbox-item"><input type="checkbox" class="filter-tipo" value="lei" checked> Leis / MPs</label>
+          <label class="checkbox-item"><input type="checkbox" class="filter-tipo" value="decreto" checked> Decretos</label>
+          <label class="checkbox-item"><input type="checkbox" class="filter-tipo" value="portaria" checked> Portarias MCID / SNH</label>
+          <label class="checkbox-item"><input type="checkbox" class="filter-tipo" value="nota-tecnica" checked> Notas Técnicas / INs</label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="title-label">Programa / Modalidade</label>
+        <select id="filterPrograma">
+          <option value="">Todas as modalidades</option>
+          <option value="far">MCMV - FAR</option>
+          <option value="compra-assistida">Compra Assistida / Calamidades</option>
+          <option value="itaipu">MCMV - Itaipu Binacional</option>
+          <option value="pop-rua">População em Situação de Rua</option>
+          <option value="trabalho-social">Trabalho Social</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="title-label">Ano de Publicação</label>
+        <input type="number" id="filterAno" placeholder="Ex: 2025" min="2000" max="2026">
+      </div>
+
+      <button class="br-button primary" onclick="aplicarFiltros(true)">Aplicar Filtros</button>
+      <button class="br-button secondary" onclick="limparFiltros()">Limpar Filtros</button>
+    </aside>
+
+    <!-- Área de Resultados -->
+    <main class="content-area">
+
+      <section id="searchView" aria-label="Busca de normativos">
+        <!-- Barra de Busca -->
+        <div class="search-panel">
+          <div class="search-input-group">
+            <input type="text" id="searchInput" placeholder="Digite o número da norma, termo ou assunto (Ex: 488, 738, Itaipu, Calamidade)..." onkeyup="if(event.key==='Enter') aplicarFiltros(true)">
+            <button class="br-button primary" style="width: auto; border-radius: 4px;" onclick="aplicarFiltros(true)">Buscar</button>
+          </div>
+          <div class="tag-container">
+            <span>Temas Frequentes:</span>
+            <button class="gov-chip" onclick="aplicarTag('Portaria 488')">Portaria 488</button>
+            <button class="gov-chip" onclick="aplicarTag('Calamidade Pública')">Calamidade Pública</button>
+            <button class="gov-chip" onclick="aplicarTag('Seleção de Beneficiários')">Seleção de Beneficiários</button>
+            <button class="gov-chip" onclick="aplicarTag('Trabalho Social')">Trabalho Social (PTS)</button>
+            <button class="gov-chip" onclick="aplicarTag('Itaipu')">Itaipu Binacional</button>
+          </div>
+        </div>
+
+        <div class="results-info">
+          <span id="resultsCount">Carregando acervo oficial...</span>
+          <span>Ordenação: <strong>Mais recentes</strong></span>
+        </div>
+
+        <div id="normasContainer"></div>
+
+        <!-- Paginação -->
+        <div class="pagination-bar" id="paginationWrapper">
+          <div class="pagination-select">
+            <label for="itemsPerPage">Exibir por página:</label>
+            <select id="itemsPerPage" onchange="mudarItensPorPagina()">
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+          <div class="pagination-buttons" id="paginationControls"></div>
+        </div>
+      </section>
+
+      <section class="hierarchy-panel" id="mapView" aria-labelledby="hierarchyTitle" hidden>
+        <h2 id="hierarchyTitle">Como as normas do MCMV-FAR se conectam</h2>
+        <p class="hierarchy-intro">Selecione uma norma para abrir sua ficha. As faixas mostram a função de cada ato no programa, do marco legal às regras de operação e aos regimes especiais.</p>
+        <div id="hierarchyMap"></div>
+        <p class="hierarchy-note"><strong>Importante:</strong> este é um mapa funcional para consulta, não uma afirmação de hierarquia formal entre portarias. As portarias detalham temas e procedimentos dentro dos limites da legislação; confira sempre o texto oficial e sua versão compilada.</p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Rodapé -->
+  <footer class="footer-govbr">
+    <p><strong>Secretaria Nacional de Habitação — Ministério das Cidades</strong></p>
+    <p>Esplanada dos Ministérios, Bloco A — Brasília/DF</p>
+    <p style="font-size: 0.75rem; color: #ccc; margin-top: 0.5rem;">Base de Dados Normativa MCMV-FAR — Padrão Design System GOV.BR</p>
+    <p style="font-size: 0.75rem; color: #ccc;">Resumos e relações das portarias: Manual de Funcionamento das Portarias do MCMV-FAR (material de treinamento em rascunho, conferido em 21/10/2026). Consulte a fonte oficial antes de tomar decisões.</p>
+  </footer>
+
+  <script>
+    const PORTAL_NORMATIVOS_URL = 'https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/habitacao/programa-minha-casa-minha-vida/portarias-far-2023';
+    const MANUAL_FONTE = 'Manual de Funcionamento das Portarias do MCMV-FAR — material de treinamento em rascunho, conferido em 21/10/2026.';
+
+    const acervoNormativos = [
+      {
+        id: 1, tipo: 'lei', tipoRotulo: 'Lei Federal', numero: '14620', ano: 2023, data: '13/07/2023',
+        titulo: 'Lei nº 14.620, de 13 de julho de 2023',
+        ementa: 'Dispõe sobre o Programa Minha Casa, Minha Vida e estabelece seu marco legal, inclusive para linhas de provisão subsidiada.',
+        programa: 'far', camada: 'Marco legal federal do MCMV (ciclo retomado em 2023)', status: 'Vigente',
+        linkOficial: 'https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14620.htm',
+        relevancia: 'É a base legal do programa. As portarias ministeriais detalham procedimentos e temas específicos sem substituir a lei.',
+        correlatas: [{ id: 10, relacao: 'regras gerais do FAR' }, { id: 9, relacao: 'padrões técnicos' }, { id: 7, relacao: 'seleção de beneficiários' }],
+        palavrasChave: ['lei', '14620', 'marco legal', 'mcmv'], mapa: 'marco'
+      },
+      {
+        id: 2, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '488', ano: 2025, data: '19/05/2025',
+        titulo: 'Portaria MCID nº 488, de 19 de maio de 2025',
+        ementa: 'Estabelece a meta e abre o procedimento de apresentação, enquadramento e contratação de empreendimentos urbanos com recursos do FAR.',
+        programa: 'far', camada: 'Ciclo de contratação 2025–2026', status: 'Vigente (manual)',
+        baseId: 1, linkOficial: 'https://www.gov.br/cidades/pt-br/acesso-a-informacao/institucional/base-juridica/portarias/2025/20250831_Portaria_MCID_488_COMPILADA_rev.pdf',
+        alteracoes: 'Portarias nº 706/2025, nº 827/2025 e nº 1.117/2026. Revoga a Portaria nº 727/2023 (art. 17, I).',
+        escopo: 'Ciclo 2025–2026; municípios acima de 50 mil habitantes, com exceções para metas específicas; propostas de entes públicos locais ou construtoras conforme o ato.',
+        regras: ['Meta de 110 mil unidades: 100 mil para cadastro local, 4 mil para localidades impactadas por obras federais, 2 mil para emergências/calamidades e 4 mil para investimentos cancelados.', 'Fluxo: proposta ao agente financeiro, análise de viabilidade, envio ao Ministério, aptidão e contratação.', 'Exige titularidade e qualificação do terreno, caracterização do projeto, anuência local e documentação complementar conforme a meta.'],
+        alerta: 'A Portaria nº 827/2025 ampliou a participação de municípios menores nas metas II a IV. Consulte o texto compilado antes de conferir elegibilidade.',
+        relevancia: 'O manual informa meta de 110 mil unidades e descreve o fluxo de proposta, análise, aptidão e contratação.',
+        correlatas: [{ id: 10, relacao: 'condições gerais' }, { id: 9, relacao: 'qualificação do terreno e porte' }, { id: 15, relacao: 'ciclo anterior, revogado' }, { id: 4, relacao: 'localidades com necessidades agravadas' }],
+        palavrasChave: ['488', 'ciclo 2025', '110 mil', 'contratação', 'far'], mapa: 'operacao'
+      },
+      {
+        id: 3, tipo: 'portaria', tipoRotulo: 'Portaria Conjunta', numero: '4', ano: 2025, data: '20/03/2025',
+        titulo: 'Portaria Conjunta MCID/MDHC/MDS nº 4, de 20 de março de 2025',
+        ementa: 'Estabelece procedimentos de atendimento a pessoas e famílias em situação ou trajetória de rua em operações do MCMV-FAR.',
+        programa: 'pop-rua', camada: 'Regra temática de atendimento a grupos prioritários', status: 'Ato publicado — conferir vigência',
+        baseId: 1, linkOficial: 'https://www.gov.br/cidades/pt-br/acesso-a-informacao/institucional/base-juridica/portarias/PORTARIACONJUNTAMCID_MDHC_MDSN4DE20DEMARODE2025.pdf',
+        relevancia: 'Articula a política habitacional com o atendimento de pessoas em situação de rua; o ato remete ao art. 8º, VI, da Lei nº 14.620/2023.',
+        correlatas: [{ id: 1, relacao: 'fundamento legal' }, { id: 7, relacao: 'seleção de beneficiários' }],
+        palavrasChave: ['população de rua', 'pop rua', 'trajetória de rua', '4']
+      },
+      {
+        id: 4, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '47', ano: 2025, data: '17/01/2025',
+        titulo: 'Portaria MCID nº 47, de 17 de janeiro de 2025',
+        ementa: 'Habilita localidades com necessidades habitacionais agravadas e define procedimentos de análise, enquadramento e contratação no MCMV-FAR.',
+        programa: 'far', camada: 'Regime específico — localidades com necessidades agravadas', status: 'Vigente (manual)',
+        baseId: 1, linkOficial: PORTAL_NORMATIVOS_URL,
+        alteracoes: 'Portarias nº 488/2025, nº 827/2025, nº 1.447/2025 e nº 1.117/2026.',
+        escopo: 'Municípios e localidades habilitados no anexo da portaria, respeitadas as metas e a qualificação dos proponentes.',
+        regras: ['A proposta depende de documentação completa sobre titularidade e localização do imóvel, tipo de edificação, quantidade de unidades e taxa de análise.', 'O agente financeiro avalia a viabilidade preliminar; o Gestor do FAR submete propostas ao Ministério e acompanha a aptidão.', 'Valores podem ser reajustados pelo INCC, conforme o texto compilado.'],
+        alerta: 'O manual aponta referências editoriais inconsistentes no ato (data da Portaria nº 725 e numeração duplicada de inciso); confirme a versão oficial.',
+        relevancia: 'A apresentação de propostas depende da habilitação da localidade, da meta disponível e da documentação prevista no ato.',
+        correlatas: [{ id: 2, relacao: 'ciclo de contratação' }, { id: 9, relacao: 'porte e especificações' }, { id: 6, relacao: 'ingresso de propostas em localidades impactadas' }],
+        palavrasChave: ['agravamento', 'localidades', '47', 'necessidades habitacionais'], mapa: 'especial'
+      },
+      {
+        id: 5, tipo: 'nota-tecnica', tipoRotulo: 'Nota Técnica', numero: '40', ano: 2024, data: '2024',
+        titulo: 'Nota Técnica nº 40/2024 — Cálculo de Déficit Habitacional',
+        ementa: 'Apresenta metodologia de cálculo do déficit habitacional com base em dados do Cadastro Único (Processo SEI MCID 80000.014523/2023-77).',
+        programa: 'trabalho-social', camada: 'Referência técnica de apoio', status: 'Documento técnico — confirmar versão',
+        baseId: 1, linkOficial: PORTAL_NORMATIVOS_URL,
+        relevancia: 'Apoia análises relacionadas ao déficit habitacional; não tem a mesma natureza normativa de lei, decreto ou portaria.',
+        correlatas: [{ id: 7, relacao: 'dados usados na seleção de famílias' }],
+        palavrasChave: ['déficit', 'cadúnico', '40', 'nota técnica']
+      },
+      {
+        id: 6, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '1388', ano: 2024, data: '11/12/2024',
+        titulo: 'Portaria MCID nº 1.388, de 11 de dezembro de 2024',
+        ementa: 'Estabelece condições para ingresso de propostas FAR destinadas a localidades impactadas por situações que agravaram as necessidades habitacionais.',
+        programa: 'far', camada: 'Regra de ingresso de propostas em localidades impactadas', status: 'Ato publicado — conferir versão atual',
+        baseId: 1, linkOficial: 'https://www.gov.br/cidades/pt-br/acesso-a-informacao/institucional/base-juridica/portarias/2024/PORTARIAMCIDN1.388DE11DEDEZEMBRODE2024..pdf',
+        relevancia: 'Complementa o tratamento de necessidades agravadas com condições de entrada de propostas.',
+        correlatas: [{ id: 4, relacao: 'localidades habilitadas e contratação' }, { id: 2, relacao: 'ciclo de contratação' }],
+        palavrasChave: ['ingresso', '1388', 'agravamento', 'localidades']
+      },
+      {
+        id: 7, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '738', ano: 2024, data: '22/07/2024',
+        titulo: 'Portaria MCID nº 738, de julho de 2024',
+        ementa: 'Define procedimentos para escolha das famílias beneficiárias de empreendimentos urbanos com recursos do FAR.',
+        programa: 'far', camada: 'Regra operacional — seleção de beneficiários', status: 'Vigente (manual)',
+        baseId: 1, linkOficial: PORTAL_NORMATIVOS_URL,
+        alteracoes: 'Alterada pela Portaria nº 1.395/2024.',
+        escopo: 'Empreendimentos urbanos FAR; a seleção alcança famílias da Faixa Urbano 1, com exceções definidas na portaria.',
+        regras: ['Exige renda dentro da faixa e ausência dos impedimentos do art. 9º da Lei nº 14.620/2023.', 'Prevê prioridades para grupos específicos e reservas mínimas de unidades, incluindo famílias do Bolsa Família/BPC, pessoas idosas e pessoas com deficiência.', 'A indicação direta é admitida em situações previstas, como calamidade, obras públicas federais e áreas de risco.'],
+        alerta: 'A seleção deve observar cadastros atualizados, critérios de prioridade, reservas e verificações do agente financeiro.',
+        relevancia: 'Reúne critérios de elegibilidade, prioridade, reservas de unidades e verificações das famílias candidatas.',
+        correlatas: [{ id: 10, relacao: 'deveres do ente local e condições gerais' }, { id: 3, relacao: 'atendimento de pessoas em situação de rua' }, { id: 16, relacao: 'regra emergencial no RS' }],
+        palavrasChave: ['seleção', 'beneficiários', '738', 'prioridade', 'famílias'], mapa: 'operacao'
+      },
+      {
+        id: 8, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '1248', ano: 2023, data: '26/09/2023',
+        titulo: 'Portaria MCID nº 1.248, de 26 de setembro de 2023',
+        ementa: 'Dispõe sobre limites de renda, participação financeira, subvenções e quitação de operações FAR, FDS e PNHR no MCMV.',
+        programa: 'far', camada: 'Regra financeira para beneficiários e operações', status: 'Ato alterado — consulte a versão compilada',
+        baseId: 1, linkOficial: 'https://www.gov.br/cidades/pt-br/acesso-a-informacao/institucional/base-juridica/portarias/2026/PortariaMCID124820231.pdf',
+        alteracoes: 'Alterada pela Portaria MCID nº 1.440, de 26 de dezembro de 2024.',
+        relevancia: 'Relaciona condições financeiras de beneficiários e operações habitacionais dos fundos FAR e FDS.',
+        correlatas: [{ id: 1, relacao: 'marco legal do programa' }, { id: 10, relacao: 'condições gerais do FAR' }],
+        palavrasChave: ['quitação', 'renda', '1248', 'participação financeira', 'subvenção']
+      },
+      {
+        id: 9, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '725', ano: 2023, data: '15/06/2023',
+        titulo: 'Portaria MCID nº 725, de 15 de junho de 2023',
+        ementa: 'Define especificações urbanísticas, de projeto e de obra, além de valores de provisão de unidades FAR e FDS.',
+        programa: 'far', camada: 'Regra estruturante — parâmetros técnicos', status: 'Vigente (manual)',
+        baseId: 1, linkOficial: 'https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/habitacao/portarias/20260323_Portaria_MCID_725_Especificacoes_MCMV_FAReFDS_COMPILADA.pdf',
+        alteracoes: 'Alterada pelas Portarias nº 489/2025 e nº 1.079/2026, entre outras; consulte a versão compilada.',
+        escopo: 'Empreendimentos urbanos subsidiados do FAR e do FDS, da qualificação do terreno à execução da obra.',
+        regras: ['Define requisitos urbanísticos, de infraestrutura, projeto, acessibilidade, sustentabilidade e desempenho construtivo.', 'Estabelece padrões mínimos para unidades habitacionais e parâmetros de porte do empreendimento.', 'Define valores máximos de provisão por unidade segundo porte e classificação territorial.'],
+        alerta: 'As especificações e os valores podem mudar por atos posteriores; consulte a versão compilada antes de avaliar proposta ou orçamento.',
+        relevancia: 'Orienta requisitos de terreno, infraestrutura, projeto, acessibilidade, sustentabilidade e valores por unidade.',
+        correlatas: [{ id: 10, relacao: 'condições gerais e operação' }, { id: 2, relacao: 'critérios de proposta e contratação' }, { id: 4, relacao: 'porte em localidades agravadas' }],
+        palavrasChave: ['especificações', 'projeto', 'engenharia', '725', 'valores de provisão'], mapa: 'geral'
+      },
+      {
+        id: 10, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '724', ano: 2023, data: '15/06/2023',
+        titulo: 'Portaria MCID nº 724, de 15 de junho de 2023',
+        ementa: 'Estabelece condições gerais da provisão subsidiada de unidades habitacionais urbanas novas com recursos do FAR.',
+        programa: 'far', camada: 'Regra estruturante — condições gerais do MCMV-FAR', status: 'Vigente (manual)',
+        baseId: 1, linkOficial: PORTAL_NORMATIVOS_URL,
+        alteracoes: 'Portarias nº 1.482/2023, nº 148/2024, nº 340/2024, nº 486/2024, nº 1.211/2024, nº 1.425/2024, nº 706/2025, nº 827/2025 e nº 772/2026.',
+        escopo: 'Rege a linha urbana subsidiada FAR e os participantes: Ministério, Gestor do FAR, agentes financeiros, entes locais, construtoras e famílias.',
+        regras: ['Define competências, enquadramento, contratação, acompanhamento, entrega e ocupação.', 'Atribui aos entes locais compromissos de infraestrutura e equipamentos, isenções e indicação das famílias.', 'Prevê parâmetros de participação financeira das famílias e custos do Trabalho Social, conforme a redação vigente.'],
+        alerta: 'O texto recebeu diversas alterações, inclusive em 2026; use a versão compilada e confira quais regras se aplicam à data da operação.',
+        relevancia: 'Organiza governança, competências, contratação, acompanhamento, entrega, ocupação e deveres dos participantes.',
+        correlatas: [{ id: 9, relacao: 'parâmetros técnicos' }, { id: 7, relacao: 'seleção de famílias' }, { id: 14, relacao: 'trabalho social' }, { id: 2, relacao: 'ciclo 2025–2026' }],
+        palavrasChave: ['condições gerais', '724', 'governança', 'contratação', 'entrega'], mapa: 'geral'
+      },
+      {
+        id: 11, tipo: 'decreto', tipoRotulo: 'Decreto Federal', numero: '6135', ano: 2007, data: '26/06/2007',
+        titulo: 'Decreto nº 6.135, de 26 de junho de 2007',
+        ementa: 'Dispôs sobre o Cadastro Único para Programas Sociais do Governo Federal (CadÚnico).',
+        programa: 'far', camada: 'Referência histórica de cadastro social', status: 'Revogado — substituído pelo Decreto nº 11.016/2022',
+        linkOficial: 'https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2007/decreto/d6135.htm',
+        relevancia: 'Mantido no acervo para contextualização; não deve ser tratado como regra vigente do CadÚnico.',
+        correlatas: [{ id: 7, relacao: 'verificação e seleção de beneficiários' }],
+        palavrasChave: ['decreto', 'cadúnico', '6135', 'cadastro único']
+      },
+      {
+        id: 12, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '1340', ano: 2025, data: '19/11/2025',
+        titulo: 'Portaria MCID nº 1.340, de 19 de novembro de 2025',
+        ementa: 'Regulamenta a iniciativa Minha Casa, Minha Vida Itaipu (MCMV-ITAIPU), com contrapartida discricionária de recursos da Itaipu Binacional.',
+        programa: 'itaipu', camada: 'Regra específica — iniciativa MCMV-Itaipu', status: 'Ato publicado',
+        baseId: 1, linkOficial: 'https://www.gov.br/cidades/pt-br/acesso-a-informacao/institucional/base-juridica/portarias/2025/PORTARIAMCIDN1.340DE19DENOVEMBRODE2025.pdf',
+        relevancia: 'Aplica recursos de contrapartida da Itaipu Binacional às linhas de provisão subsidiada do programa.',
+        correlatas: [{ id: 1, relacao: 'marco legal do MCMV' }],
+        palavrasChave: ['itaipu', 'binacional', '1340', 'contrapartida']
+      },
+      {
+        id: 13, tipo: 'portaria', tipoRotulo: 'Portaria Interministerial MCID/MF', numero: '2', ano: 2023, data: '01/03/2023',
+        titulo: 'Portaria Interministerial MCID/MF nº 2, de 1º de março de 2023',
+        ementa: 'Dispõe sobre subvenções econômicas, meta de atendimento e remuneração do gestor operacional e dos agentes financeiros do MCMV.',
+        programa: 'far', camada: 'Regra estruturante — limites financeiros e metas', status: 'Vigente (manual)',
+        baseId: 1, linkOficial: PORTAL_NORMATIVOS_URL,
+        alteracoes: 'Portarias Interministeriais MCID/MF nº 2/2025 e nº 4/2025.',
+        escopo: 'Linhas subsidiadas do MCMV operadas com recursos do FAR, do FDS e da União.',
+        regras: ['O manual registra limite de R$ 195 mil para provisão subsidiada urbana (FAR/FDS), R$ 112,5 mil para provisão rural e R$ 55 mil para melhoria rural.', 'Prevê meta nacional de 2 milhões de famílias, condicionada à disponibilidade orçamentária e financeira.', 'Admite majorações específicas para energia fotovoltaica e requalificação, conforme o texto.'],
+        alerta: 'O manual alerta que o texto consultado ainda previa meta de 2 milhões apesar de anúncio público de 3 milhões; confirme redação e valores atuais.',
+        relevancia: 'Define parâmetros financeiros e metas nacionais para as linhas subsidiadas; limites específicos podem ter regras próprias.',
+        correlatas: [{ id: 10, relacao: 'condições gerais do FAR' }, { id: 9, relacao: 'valores de provisão e parâmetros técnicos' }, { id: 17, relacao: 'subvenção específica para o RS' }],
+        palavrasChave: ['subvenção', 'limites', 'meta nacional', '2', 'interministerial'], mapa: 'geral'
+      },
+      {
+        id: 14, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '75', ano: 2025, data: '28/01/2025',
+        titulo: 'Portaria MCID nº 75, de 28 de janeiro de 2025',
+        ementa: 'Dispõe sobre o Trabalho Social nos programas e ações do Ministério das Cidades, inclusive no MCMV-FAR.',
+        programa: 'trabalho-social', camada: 'Regra operacional — Trabalho Social', status: 'Vigente (manual)',
+        baseId: 1, linkOficial: PORTAL_NORMATIVOS_URL,
+        alteracoes: 'Não indicadas no manual consultado; confirme a versão oficial atual.',
+        escopo: 'Programas e ações do Ministério das Cidades, inclusive empreendimentos do MCMV-FAR.',
+        regras: ['Prevê Projeto de Trabalho Social (PTS), Relatórios de Acompanhamento (RATS) e Termo de Referência.', 'O manual registra custo de 1,5% do valor de provisão em empreendimentos unifamiliares e 2% em multifamiliares.', 'A fase de pós-ocupação começa após a assinatura dos contratos com as famílias; o ente local executa o trabalho social.'],
+        alerta: 'Para intervenções antigas ainda sem início do Trabalho Social, a regra de transição admite a norma vigente na contratação, em regra a Portaria nº 464/2018.',
+        relevancia: 'Define instrumentos, execução e recursos do Trabalho Social antes, durante e após a mudança das famílias.',
+        correlatas: [{ id: 10, relacao: 'condições gerais do FAR e percentuais' }, { id: 19, relacao: 'norma anterior para operações de legado' }],
+        palavrasChave: ['trabalho social', 'PTS', '75', 'pós-ocupação'], mapa: 'operacao'
+      },
+      {
+        id: 15, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '727', ano: 2023, data: '15/06/2023',
+        titulo: 'Portaria MCID nº 727, de 15 de junho de 2023',
+        ementa: 'Abriu o ciclo de enquadramento e contratação do MCMV-FAR de 2023–2024 e estabeleceu meta de contratação.',
+        programa: 'far', camada: 'Ciclo de contratação 2023–2024 (histórico)', status: 'Revogada pela Portaria nº 488/2025',
+        baseId: 1, linkOficial: 'https://www.gov.br/cidades/pt-br/acesso-a-informacao/institucional/base-juridica/portarias/2025/20250513_Portaria_MCID_727_CONSOLIDADA_Enquadramento_e_contratao_MCMV_FAR.pdf',
+        alteracoes: 'Revogada pela Portaria MCID nº 488/2025, art. 17, I.',
+        escopo: 'Empreendimentos contratados no ciclo 2023–2024; referência histórica para acompanhamento de obras desse período.',
+        regras: ['Estabeleceu meta de 130 mil unidades no ciclo anterior, distribuída em metas para cadastro local, obras federais, calamidade e necessidades agravadas.', 'Operações dependiam de anuência do ente local, compromissos de infraestrutura e viabilidade técnica, financeira e jurídica.', 'Propostas prorrogadas puderam seguir sob condições previstas na Portaria nº 488/2025.'],
+        alerta: 'Está revogada: não aplique suas regras a novas propostas; use a Portaria nº 488/2025 e suas alterações.',
+        relevancia: 'Permanece relevante para consulta de empreendimentos contratados no ciclo 2023–2024; não usar para novas propostas.',
+        correlatas: [{ id: 2, relacao: 'ato que a revogou e substituiu para o ciclo seguinte' }, { id: 10, relacao: 'condições gerais' }],
+        palavrasChave: ['727', 'ciclo 2023', 'revogada', '130 mil'], mapa: 'especial'
+      },
+      {
+        id: 16, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '520', ano: 2024, data: '05/06/2024',
+        titulo: 'Portaria MCID nº 520, de 5 de junho de 2024',
+        ementa: 'Institui procedimento excepcional de compra assistida de unidades novas ou usadas com recursos do FAR para famílias atingidas pela calamidade no Rio Grande do Sul.',
+        programa: 'compra-assistida', camada: 'Regime emergencial — compra assistida no RS', status: 'Medida emergencial',
+        baseId: 1, linkOficial: PORTAL_NORMATIVOS_URL,
+        alteracoes: 'Portarias nº 704/2024, nº 1.211/2024, nº 1.425/2024 e nº 706/2025.',
+        escopo: 'Famílias do Rio Grande do Sul com moradia destruída ou definitivamente interditada pela calamidade de 2024; aquisição de unidades novas ou usadas.',
+        regras: ['O imóvel deve atender requisitos de habitabilidade, regularidade e localização fora de área interditada.', 'O valor é o menor entre preço de venda e avaliação, limitado a R$ 200 mil, conforme o manual.', 'A compra é paga após registro da escritura; a portaria também prevê procedimento para imóveis em obra.'],
+        alerta: 'A operação depende da elegibilidade da família e do imóvel, de documentação válida e de recursos disponíveis.',
+        relevancia: 'Viabiliza aquisição de moradias para famílias com unidades destruídas ou definitivamente interditadas pela calamidade de 2024.',
+        correlatas: [{ id: 17, relacao: 'alternativa de produção de novas unidades no RS' }, { id: 7, relacao: 'seleção e elegibilidade de famílias' }],
+        palavrasChave: ['compra assistida', 'calamidade', 'rio grande do sul', '520'], mapa: 'especial'
+      },
+      {
+        id: 17, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '704', ano: 2024, data: '17/07/2024',
+        titulo: 'Portaria MCID nº 704, de 17 de julho de 2024',
+        ementa: 'Abre procedimento emergencial para contratação de empreendimentos FAR em municípios do Rio Grande do Sul atingidos pela calamidade de 2024.',
+        programa: 'compra-assistida', camada: 'Regime emergencial — produção de novas unidades no RS', status: 'Medida emergencial',
+        baseId: 1, linkOficial: PORTAL_NORMATIVOS_URL,
+        alteracoes: 'Consulte a versão compilada no portal oficial.',
+        escopo: 'Municípios gaúchos com calamidade reconhecida em 2024 e propostas de empreendimentos FAR de produção habitacional.',
+        regras: ['Admite empreendimentos de até 1.500 unidades e tecnologias construtivas inovadoras, observadas as condições da portaria.', 'O manual registra subvenção de até R$ 200 mil, nos termos da Portaria Interministerial MCID/MF nº 6/2024, e acréscimo de 5% para conclusão no prazo acelerado.', 'Prevê declaração municipal de compromissos e relatórios periódicos do Gestor do FAR.'],
+        alerta: 'A existência de meta ou proposta prevista não garante contratação; dependem de viabilidade, regularização, infraestrutura e disponibilidade orçamentária.',
+        relevancia: 'Prevê rito específico de contratação, limites próprios de subvenção e acompanhamento das propostas para municípios atingidos.',
+        correlatas: [{ id: 16, relacao: 'alternativa de compra assistida no RS' }, { id: 13, relacao: 'parâmetros gerais de subvenção' }, { id: 2, relacao: 'ciclo regular de contratação' }],
+        palavrasChave: ['704', 'rio grande do sul', 'calamidade', 'produção emergencial'], mapa: 'especial'
+      },
+      {
+        id: 18, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '146', ano: 2023, data: '07/03/2023',
+        titulo: 'Portaria MCID nº 146, de 7 de março de 2023',
+        ementa: 'Trata de operações FAR, FDS, PNHU e PNHR do MCMV que se encontravam inconclusas.',
+        programa: 'far', camada: 'Regime de legado — operações antigas inconclusas', status: 'Legado — aplica-se a operações antigas',
+        baseId: 20, linkOficial: PORTAL_NORMATIVOS_URL,
+        alteracoes: 'Portarias nº 1.230/2024 e nº 985/2026. O manual registra divergência entre referências a nº 1.230/2024 e nº 1.239/2024; conferir no DOU.',
+        escopo: 'Operações FAR, FDS, PNHU e PNHR contratadas anteriormente e inconclusas; não se aplica ao diagnóstico de operação ainda em fase de projeto, segundo o manual.',
+        regras: ['Organiza diagnóstico e encaminhamento de informações dos agentes ao Gestor do FAR e ao Ministério para definição da solução.', 'O manual registra limites por unidade de R$ 140 mil para FAR/FDS e R$ 75 mil para PNHR, com possibilidade de aporte adicional em situações específicas.', 'Prevê tratamento para empreendimentos com ocupação irregular e possibilidade de prorrogação excepcional.'],
+        alerta: 'O próprio manual aponta divergência entre números de atos alteradores no cabeçalho compilado e na nota do artigo; confirme no Diário Oficial antes de citar.',
+        relevancia: 'Organiza diagnóstico e medidas para retomar, regularizar ou encerrar operações contratadas antes de 2023.',
+        correlatas: [{ id: 20, relacao: 'marco legal dos contratos do MCMV antigo' }, { id: 19, relacao: 'Trabalho Social em operações do legado' }],
+        palavrasChave: ['146', 'legado', 'obras inconclusas', 'operações antigas'], mapa: 'especial'
+      },
+      {
+        id: 19, tipo: 'portaria', tipoRotulo: 'Portaria MCID', numero: '464', ano: 2018, data: '25/07/2018',
+        titulo: 'Portaria MCID nº 464, de 25 de julho de 2018',
+        ementa: 'Dispõe sobre o Trabalho Social nos programas e ações do Ministério das Cidades.',
+        programa: 'trabalho-social', camada: 'Regime de legado — Trabalho Social anterior', status: 'Legado — para intervenções antigas',
+        baseId: 20, linkOficial: PORTAL_NORMATIVOS_URL,
+        alteracoes: 'Alterações de 2018 e 2022; confira a versão compilada.',
+        escopo: 'Intervenções habitacionais e de saneamento contratadas sob a vigência anterior, inclusive operações FAR, Entidades e Rural.',
+        regras: ['Estrutura o Trabalho Social em eixos de mobilização/organização, gestão social, educação ambiental e patrimonial e desenvolvimento socioeconômico.', 'No FAR, o manual registra custo de 1,5% (unifamiliar) ou 2% (multifamiliar), com pelo menos 70% destinado à pós-ocupação.', 'Prevê instrumentos e etapas próprias para intervenções antigas, conforme porte e condições do contrato.'],
+        alerta: 'A aplicação depende da data e do regime do contrato; a Portaria nº 75/2025 é a referência atual indicada pelo manual para novos casos.',
+        relevancia: 'O manual informa que pode ser usada em intervenções contratadas antes da Portaria nº 75/2025 que ainda não iniciaram o Trabalho Social.',
+        correlatas: [{ id: 14, relacao: 'norma atual de Trabalho Social' }, { id: 18, relacao: 'operações antigas inconclusas' }],
+        palavrasChave: ['464', 'trabalho social', 'legado', 'PTS'], mapa: 'especial'
+      },
+      {
+        id: 20, tipo: 'lei', tipoRotulo: 'Lei Federal', numero: '11977', ano: 2009, data: '07/07/2009',
+        titulo: 'Lei nº 11.977, de 7 de julho de 2009',
+        ementa: 'Instituiu o Programa Minha Casa, Minha Vida original e segue como referência para contratos e operações do ciclo anterior, conforme o manual.',
+        programa: 'far', camada: 'Marco legal do MCMV original — referência de legado', status: 'Marco histórico — observar alterações e incidência por contrato',
+        linkOficial: 'https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2009/lei/l11977.htm',
+        relevancia: 'Ajuda a compreender contratos antigos que continuam submetidos às regras da época, inclusive parte das operações tratadas pela Portaria nº 146/2023.',
+        correlatas: [{ id: 18, relacao: 'operações antigas inconclusas' }, { id: 19, relacao: 'Trabalho Social do ciclo anterior' }, { id: 1, relacao: 'marco legal do MCMV retomado em 2023' }],
+        palavrasChave: ['11977', 'lei', '2009', 'legado', 'programa original'], mapa: 'marco'
+      }
+    ];
+
+    let paginaAtual = 1;
+    let registrosPorPagina = 10;
+    let resultadosFiltrados = [];
+    const fichasDoManual = new Set([2, 4, 7, 9, 10, 13, 14, 15, 16, 17, 18, 19, 20]);
+    const camadasHierarquia = [
+      { id: 'marco', titulo: '1. Marcos legais', descricao: 'Leis que instituem ou orientam o programa e seus contratos.' },
+      { id: 'geral', titulo: '2. Regras estruturantes', descricao: 'Parâmetros financeiros, condições de operação e padrões técnicos.' },
+      { id: 'operacao', titulo: '3. Regras operacionais', descricao: 'Ciclos de contratação, seleção de famílias e Trabalho Social.' },
+      { id: 'especial', titulo: '4. Regimes especiais e legado', descricao: 'Emergências, localidades específicas e operações de ciclos anteriores.' }
+    ];
+
+    function escaparHtml(valor) {
+      return String(valor || '').replace(/[&<>"']/g, caractere => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[caractere]);
+    }
+
+    function obterNorma(id) {
+      return acervoNormativos.find(norma => norma.id === id);
+    }
+
+    function alternarVisualizacao(visualizacao) {
+      const mostrarMapa = visualizacao === 'mapa';
+      const mainContainer = document.querySelector('.main-container');
+
+      mainContainer.dataset.view = mostrarMapa ? 'map' : 'search';
+      document.getElementById('searchView').hidden = mostrarMapa;
+      document.getElementById('mapView').hidden = !mostrarMapa;
+      document.getElementById('searchTab').setAttribute('aria-pressed', String(!mostrarMapa));
+      document.getElementById('mapTab').setAttribute('aria-pressed', String(mostrarMapa));
+    }
+
+    function renderizarMapaHierarquia() {
+      const container = document.getElementById('hierarchyMap');
+      container.innerHTML = camadasHierarquia.map((camada, indice) => {
+        const normas = acervoNormativos.filter(norma => norma.mapa === camada.id);
+        const nos = normas.map(norma => `
+          <button type="button" class="hierarchy-node" onclick="selecionarNorma(${norma.id})">
+            <strong>${escaparHtml(norma.tipoRotulo)} nº ${escaparHtml(norma.numero)}</strong>
+            <span>${escaparHtml(norma.camada)} · ${escaparHtml(norma.status)}</span>
+          </button>
+        `).join('');
+        const conector = indice < camadasHierarquia.length - 1
+          ? '<div class="hierarchy-connector" aria-hidden="true">↓</div>'
+          : '';
+
+        return `
+          <div class="hierarchy-layer">
+            <div class="hierarchy-layer-title">${escaparHtml(camada.titulo)}<span class="hierarchy-intro">${escaparHtml(camada.descricao)}</span></div>
+            <div class="hierarchy-nodes">${nos}</div>
+          </div>
+          ${conector}
+        `;
+      }).join('');
+    }
+
+    function selecionarNorma(id) {
+      const norma = obterNorma(id);
+      if (!norma) return;
+
+      alternarVisualizacao('busca');
+      document.getElementById('searchInput').value = norma.titulo;
+      document.getElementById('filterPrograma').value = '';
+      document.getElementById('filterAno').value = '';
+      document.querySelectorAll('.filter-tipo').forEach(checkbox => checkbox.checked = true);
+      paginaAtual = 1;
+      resultadosFiltrados = [norma];
+      renderizarPagina();
+      window.setTimeout(() => {
+        const card = document.getElementById(`norma-${id}`);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 0);
+    }
+
+    function chaveData(norma) {
+      const partes = norma.data.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      return partes ? `${partes[3]}${partes[2]}${partes[1]}` : `${norma.ano}0000`;
+    }
+
+    function aplicarFiltros(resetPagina = false) {
+      if (resetPagina) paginaAtual = 1;
+
+      const termoBusca = document.getElementById('searchInput').value.toLowerCase().trim();
+      const programaSelecionado = document.getElementById('filterPrograma').value;
+      const anoSelecionado = document.getElementById('filterAno').value.trim();
+      const tiposSelecionados = Array.from(document.querySelectorAll('.filter-tipo:checked')).map(cb => cb.value);
+
+      resultadosFiltrados = acervoNormativos.filter(norma => {
+        const bateTipo = tiposSelecionados.includes(norma.tipo);
+        const batePrograma = !programaSelecionado || norma.programa === programaSelecionado;
+        const bateAno = !anoSelecionado || norma.ano.toString() === anoSelecionado;
+        const bateTexto = !termoBusca || 
+          norma.titulo.toLowerCase().includes(termoBusca) ||
+          norma.ementa.toLowerCase().includes(termoBusca) ||
+          norma.camada.toLowerCase().includes(termoBusca) ||
+          norma.relevancia.toLowerCase().includes(termoBusca) ||
+          (norma.alteracoes || '').toLowerCase().includes(termoBusca) ||
+          norma.numero.includes(termoBusca) ||
+          norma.palavrasChave.some(pc => pc.toLowerCase().includes(termoBusca));
+
+        return bateTipo && batePrograma && bateAno && bateTexto;
+      }).sort((a, b) => chaveData(b).localeCompare(chaveData(a)));
+
+      renderizarPagina();
+    }
+
+    function renderizarPagina() {
+      const container = document.getElementById('normasContainer');
+      const countLabel = document.getElementById('resultsCount');
+      const totalRegistros = resultadosFiltrados.length;
+
+      const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina) || 1;
+      if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+
+      const inicio = (paginaAtual - 1) * registrosPorPagina;
+      const fim = inicio + registrosPorPagina;
+      const itensPagina = resultadosFiltrados.slice(inicio, fim);
+
+      countLabel.innerHTML = `Exibindo <strong>${totalRegistros === 0 ? 0 : inicio + 1}-${Math.min(fim, totalRegistros)}</strong> de <strong>${totalRegistros} normativo(s)</strong> encontrados`;
+
+      if (itensPagina.length === 0) {
+        container.innerHTML = `
+          <div style="background:var(--gov-gray-10); border:1px dashed var(--gov-border); padding:2rem; text-align:center; border-radius:4px; margin-top:1rem;">
+            <h3>Nenhum normativo encontrado</h3>
+            <p style="font-size:0.88rem; color:var(--gov-gray-60);">Refine seus termos de busca ou remova alguns filtros laterais.</p>
+          </div>
+        `;
+        renderizarControlesPaginacao(0);
+        return;
+      }
+
+      container.innerHTML = itensPagina.map(norma => {
+        const baseLegal = norma.baseId ? obterNorma(norma.baseId) : null;
+        const relacionadas = (norma.correlatas || []).map(relacao => {
+          const correlata = obterNorma(relacao.id);
+          if (!correlata) return '';
+          return `<span class="related-norm-item"><button type="button" class="related-norm-button" onclick="selecionarNorma(${correlata.id})">${escaparHtml(correlata.tipoRotulo)} nº ${escaparHtml(correlata.numero)}</button><span>${escaparHtml(relacao.relacao)}</span></span>`;
+        }).filter(Boolean).join('');
+        const statusClass = norma.status.toLowerCase().includes('revog')
+          ? 'revogada'
+          : norma.status.toLowerCase().includes('legado') || norma.status.toLowerCase().includes('histórico')
+            ? 'legado'
+            : norma.status.toLowerCase().includes('conferir') || norma.status.toLowerCase().includes('confirmar')
+              ? 'confirmar'
+              : norma.status.toLowerCase().includes('emergencial')
+                ? 'emergencial'
+                : norma.status.toLowerCase().includes('vigente')
+                  ? 'vigente'
+                  : '';
+        const textoLink = norma.linkOficial === PORTAL_NORMATIVOS_URL
+          ? 'Localizar este ato na coleção oficial do gov.br'
+          : 'Abrir texto oficial';
+        const regrasHtml = (norma.regras || []).map(regra => `<li>${escaparHtml(regra)}</li>`).join('');
+        const tituloHtml = norma.linkOficial === PORTAL_NORMATIVOS_URL
+          ? `<h3 class="norma-card-title">${escaparHtml(norma.titulo)}</h3>`
+          : `<a href="${escaparHtml(norma.linkOficial)}" target="_blank" rel="noopener noreferrer" class="norma-card-title">${escaparHtml(norma.titulo)}</a>`;
+        const baseHtml = baseLegal
+          ? `<button type="button" class="hierarchy-base-button" onclick="selecionarNorma(${baseLegal.id})">${escaparHtml(baseLegal.titulo)}</button>`
+          : norma.tipo === 'lei'
+            ? escaparHtml(norma.titulo)
+            : 'Referência temática — vínculo hierárquico direto não indicado';
+
+        return `
+        <article class="norma-card" id="norma-${norma.id}">
+          <div class="norma-card-header">
+            <span class="gov-badge">${norma.tipoRotulo}</span>
+            <span class="norma-status ${statusClass}">${escaparHtml(norma.status)}</span>
+            <span class="norma-card-date">Data do ato: ${escaparHtml(norma.data)}</span>
+          </div>
+          ${tituloHtml}
+          <p class="norma-card-ementa">${escaparHtml(norma.ementa)}</p>
+          <div class="norma-card-hierarchy" aria-label="Posição funcional da norma">
+            <div>
+              <span class="hierarchy-caption">Marco legal / âmbito</span>
+              <span class="hierarchy-value">${baseHtml}</span>
+            </div>
+            <span class="hierarchy-arrow" aria-hidden="true">→</span>
+            <div>
+              <span class="hierarchy-caption">Camada funcional consultada</span>
+              <span class="hierarchy-value">${escaparHtml(norma.camada)}</span>
+            </div>
+          </div>
+          <p class="norma-card-ementa">${escaparHtml(norma.relevancia)}</p>
+          <details class="norma-details">
+            <summary>Ver alterações, relações e contexto</summary>
+            <div class="norma-detail-grid">
+              <div>
+                <h4>Escopo de aplicação</h4>
+                <p>${escaparHtml(norma.escopo || norma.camada)}</p>
+              </div>
+              <div>
+                <h4>Regras em destaque</h4>
+                ${regrasHtml ? `<ul>${regrasHtml}</ul>` : `<p>${escaparHtml(norma.relevancia)}</p>`}
+              </div>
+              <div>
+                <h4>Alerta de consulta</h4>
+                <p>${escaparHtml(norma.alerta || 'Confirme a vigência e as alterações no texto oficial antes de aplicar esta norma.')}</p>
+              </div>
+              <div>
+                <h4>Alterações / situação</h4>
+                <p>${escaparHtml(norma.alteracoes || norma.status)}</p>
+              </div>
+              <div>
+                <h4>Normas relacionadas</h4>
+                <p class="related-norms">${relacionadas || 'Nenhuma correlação cadastrada no acervo.'}</p>
+              </div>
+              <div>
+                <h4>Como interpretar</h4>
+                <p>A conexão indica fundamento, tema ou complementaridade funcional; não significa que uma portaria tenha precedência formal sobre outra.</p>
+              </div>
+            </div>
+            ${fichasDoManual.has(norma.id) ? `<p class="source-note">Fonte do resumo: ${escaparHtml(MANUAL_FONTE)} O manual não substitui o texto oficial.</p>` : ''}
+          </details>
+          <div class="norma-card-footer">
+            <a href="${escaparHtml(norma.linkOficial || PORTAL_NORMATIVOS_URL)}" target="_blank" rel="noopener noreferrer">${textoLink}</a>
+            <button type="button" class="related-norm-button" onclick="selecionarNorma(${norma.id})">Abrir esta ficha isoladamente</button>
+          </div>
+        </article>
+      `;
+      }).join('');
+
+      renderizarControlesPaginacao(totalPaginas);
+    }
+
+    function renderizarControlesPaginacao(totalPaginas) {
+      const controlsContainer = document.getElementById('paginationControls');
+
+      if (totalPaginas <= 1) {
+        controlsContainer.innerHTML = '';
+        return;
+      }
+
+      let html = `<button class="page-btn" ${paginaAtual === 1 ? 'disabled' : ''} onclick="mudarPagina(${paginaAtual - 1})">Anterior</button>`;
+
+      for (let i = 1; i <= totalPaginas; i++) {
+        html += `<button class="page-btn ${i === paginaAtual ? 'active' : ''}" onclick="mudarPagina(${i})">${i}</button>`;
+      }
+
+      html += `<button class="page-btn" ${paginaAtual === totalPaginas ? 'disabled' : ''} onclick="mudarPagina(${paginaAtual + 1})">Próxima</button>`;
+
+      controlsContainer.innerHTML = html;
+    }
+
+    function mudarPagina(novaPagina) {
+      paginaAtual = novaPagina;
+      renderizarPagina();
+      window.scrollTo({ top: 300, behavior: 'smooth' });
+    }
+
+    function mudarItensPorPagina() {
+      registrosPorPagina = parseInt(document.getElementById('itemsPerPage').value);
+      paginaAtual = 1;
+      renderizarPagina();
+    }
+
+    function aplicarTag(termo) {
+      document.getElementById('searchInput').value = termo;
+      aplicarFiltros(true);
+    }
+
+    function filtrarPorModulo(siglaPrograma) {
+      document.getElementById('filterPrograma').value = siglaPrograma;
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterAno').value = '';
+      aplicarFiltros(true);
+    }
+
+    function limparFiltros() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterPrograma').value = '';
+      document.getElementById('filterAno').value = '';
+      document.querySelectorAll('.filter-tipo').forEach(cb => cb.checked = true);
+      aplicarFiltros(true);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderizarMapaHierarquia();
+      aplicarFiltros(true);
+    });
+  </script>
+
+</body>
+</html>

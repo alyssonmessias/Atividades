@@ -163,6 +163,32 @@
       width: 100%;
     }
 
+    .stack-container.showing-normativos {
+      min-height: 100vh;
+      padding-top: 6.5rem;
+    }
+
+    .stack-container.showing-normativos .stack-card {
+      display: none;
+    }
+
+    .normativos-view {
+      width: 100%;
+    }
+
+    .normativos-view[hidden] {
+      display: none;
+    }
+
+    .normativos-view iframe {
+      display: block;
+      width: 100%;
+      height: calc(100vh - 6.5rem);
+      min-height: 480px;
+      border: 0;
+      background: #fff;
+    }
+
     .stack-card {
       position: sticky;
       top: 0;
@@ -606,7 +632,7 @@
       <li><a href="#stack2">Oportunidades</a></li>
       <li><a href="#stack3">Subsídios</a></li>
       <li><a href="#stack4">Emergencial</a></li>
-      <li><a href="#normativos">Normativos</a></li>
+      <li><a href="portal_normativos.html">Normativos</a></li>
     </ul>
     <a href="https://www.caixa.gov.br/voce/habitacao/minha-casa-minha-vida/paginas/default.aspx" target="_blank" class="btn-nav-cta">Simular Imóvel</a>
   </header>
@@ -690,10 +716,14 @@
       </div>
     </div>
 
+    <div class="normativos-view" id="normativosView" hidden>
+      <iframe id="normativosFrame" title="Consulta de normativos" data-src="portal_normativos.html"></iframe>
+    </div>
+
   </div>
 
   <!-- SEÇÃO DE NORMATIVOS EM AZUL CLARO -->
-  <section class="section-blue-light" id="normativos">
+  <!--section class="section-blue-light" id="normativos">
     <div class="section-header">
       <span class="section-subtitle">Transparência Governamental</span>
       <h2 class="section-title">Base Jurídica & Normativos</h2>
@@ -718,7 +748,7 @@
         <a href="#stack3">Ler na Íntegra ➔</a>
       </div>
     </div>
-  </section>
+  </section-->
 
   <!-- Rodapé -->
   <footer>
@@ -758,6 +788,28 @@
         mainHeader.classList.add('scrolled');
       } else {
         mainHeader.classList.remove('scrolled');
+      }
+    });
+
+    const stackContainer = document.querySelector('.stack-container');
+    const normativosView = document.getElementById('normativosView');
+    const normativosFrame = document.getElementById('normativosFrame');
+
+    document.querySelector('.nav-links').addEventListener('click', event => {
+      const link = event.target.closest('a');
+      if (!link) return;
+
+      if (link.getAttribute('href') === 'portal_normativos.html') {
+        event.preventDefault();
+        stackContainer.classList.add('showing-normativos');
+        normativosView.hidden = false;
+        if (!normativosFrame.hasAttribute('src')) {
+          normativosFrame.src = normativosFrame.dataset.src;
+        }
+        stackContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (link.getAttribute('href').startsWith('#')) {
+        stackContainer.classList.remove('showing-normativos');
+        normativosView.hidden = true;
       }
     });
 
