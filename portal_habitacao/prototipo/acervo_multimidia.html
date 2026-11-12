@@ -29,7 +29,10 @@
     .material-section > h2 { margin-bottom: 1rem; color: #172b4d; font-size: 1.45rem; }
     .material-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 265px), 1fr)); gap: 1.2rem; }
     .material-card { overflow: hidden; border: 1px solid #d8dee8; border-radius: .6rem; background: #fff; box-shadow: 0 3px 12px #172b4d0d; }
+    .material-card--image-cover { border: 0; }
     .material-cover { display: grid; min-height: 190px; place-items: center; padding: 1rem; background: linear-gradient(135deg, #e2efff, #b7d2f2); color: #0c326f; text-align: center; }
+    .material-cover--image { height: 230px; padding: 0; background: transparent; }
+    .material-cover--image img { display: block; width: 100%; height: 100%; object-fit: cover; }
     .material-cover span { display: block; padding: .7rem; border: 1px dashed #1351b4; border-radius: .35rem; font-size: .9rem; font-weight: 700; }
     .material-body { padding: 1.1rem; }
     .material-type { color: #1351b4; font-size: .75rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
@@ -68,16 +71,18 @@
       <h2 id="cartilhas">Cartilhas</h2>
       <div class="material-grid">
         <!-- Modelo de material: substitua a prévia e os dados; configure os caminhos de visualização e download. -->
-        <article class="material-card">
-          <div class="material-cover" role="img" aria-label="Espaço para capa da cartilha"><span>Prévia da cartilha</span></div>
+        <article class="material-card material-card--image-cover">
+          <div class="material-cover material-cover--image" role="img" aria-label="Capa da cartilha de compra assistida">
+            <img src="imgs/banner-compra-assistida.png" alt="Banner da cartilha de compra assistida">
+          </div>
           <div class="material-body">
             <span class="material-type">Cartilha</span>
             <h3>Título da cartilha</h3>
             <p>Insira um resumo do conteúdo e para quem este material é indicado.</p>
             <div class="material-meta"><strong>Formato:</strong> PDF · <strong>Idioma:</strong> Português</div>
             <div class="material-actions">
-              <button type="button" class="secondary" disabled aria-disabled="true">Visualização em breve</button>
-              <button type="button" disabled aria-disabled="true">Download em breve</button>
+              <a class="secondary" href="docs/M1_1.3_CARNOR_PPT_CompraAssistida_v1.0_20261108.pdf" target="_blank" rel="noopener">Visualizar documento</a>
+              <a href="docs/M1_1.3_CARNOR_PPT_CompraAssistida_v1.0_20261108.pdf" download>Download</a>
             </div>
           </div>
         </article>
