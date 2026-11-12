@@ -785,7 +785,7 @@
     <!-- Navegação do Portal -->
   <nav class="nav-govbr">
     <div class="nav-container">
-      <a href="Consulta_Normativos.html" class="active" aria-current="page">Consulta de Normativos</a>
+      <a href="consulta_normativos.html" class="active" aria-current="page">Consulta de Normativos</a>
       <a href="capacitacoes.html">Capacitações & EAD (Capacidades)</a>
       <a href="acervo_multimidia.html">Acervo Multimídia</a>
     </div>
@@ -1435,6 +1435,11 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       renderizarMapaHierarquia();
+      const termoBusca = new URLSearchParams(window.location.search).get('q');
+      if (termoBusca !== null) {
+        alternarVisualizacao('busca');
+        document.getElementById('searchInput').value = termoBusca;
+      }
       aplicarFiltros(true);
     });
   </script>

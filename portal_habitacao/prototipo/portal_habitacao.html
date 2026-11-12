@@ -796,18 +796,24 @@
     const normativosView = document.getElementById('normativosView');
     const normativosFrame = document.getElementById('normativosFrame');
 
+    function mostrarConsultaNormativos(termoBusca = '') {
+      stackContainer.classList.add('showing-normativos');
+      normativosView.hidden = false;
+
+      const consultaUrl = new URL(normativosFrame.dataset.src, window.location.href);
+      if (termoBusca) consultaUrl.searchParams.set('q', termoBusca);
+      normativosFrame.src = consultaUrl.toString();
+
+      stackContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     document.querySelector('.nav-links').addEventListener('click', event => {
       const link = event.target.closest('a');
       if (!link) return;
 
       if (link.getAttribute('href') === 'portal_normativos.html') {
         event.preventDefault();
-        stackContainer.classList.add('showing-normativos');
-        normativosView.hidden = false;
-        if (!normativosFrame.hasAttribute('src')) {
-          normativosFrame.src = normativosFrame.dataset.src;
-        }
-        stackContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        mostrarConsultaNormativos();
       } else if (link.getAttribute('href').startsWith('#')) {
         stackContainer.classList.remove('showing-normativos');
         normativosView.hidden = true;
@@ -863,10 +869,18 @@
     }
 
     function executarBuscaHero() {
-      if (heroInput.value.trim() !== '') {
-        heroInput.dispatchEvent(new Event('input'));
-      }
+      const termoBusca = heroInput.value.trim();
+      if (!termoBusca) return;
+
+      mostrarConsultaNormativos(termoBusca);
     }
+
+    heroInput.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        executarBuscaHero();
+      }
+    });
 
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.search-hero-wrapper')) {
