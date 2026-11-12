@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cursos e capacitações da Secretaria Nacional de Habitação.">
+  <title>Capacitações & EAD — Ministério das Cidades</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      font-family: "Open Sans", sans-serif;
+      color: #333;
+      background: #f5f7fa;
+      font-synthesis: none;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    .gov-bar { padding: .5rem max(1.25rem, calc((100% - 1200px) / 2)); background: #0c326f; color: #fff; font-size: .85rem; }
+    .brand { padding: 1.2rem max(1.25rem, calc((100% - 1200px) / 2)); background: #fff; border-bottom: 1px solid #d8dee8; }
+    .brand strong { color: #1351b4; font-size: 1.15rem; }
+    .brand span { display: block; color: #596579; font-size: .9rem; }
+    nav { background: #1351b4; }
+    .nav-container { display: flex; flex-wrap: wrap; max-width: 1200px; margin: auto; padding: 0 1rem; }
+    .nav-container a { padding: .85rem 1rem; color: #fff; text-decoration: none; font-size: .9rem; font-weight: 700; }
+    .nav-container a:hover, .nav-container a[aria-current="page"] { background: #0c326f; box-shadow: inset 0 -3px #ffcd07; }
+    main { max-width: 1200px; margin: 2rem auto 4rem; padding: 0 1.25rem; }
+    .intro { margin-bottom: 2rem; }
+    .eyebrow { color: #1351b4; font-size: .8rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    h1 { margin: .35rem 0 .5rem; color: #172b4d; font-size: clamp(1.8rem, 4vw, 2.5rem); }
+    .intro p { max-width: 720px; margin: 0; color: #596579; }
+    .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 1.25rem; }
+    .course-card { overflow: hidden; border: 1px solid #d8dee8; border-radius: .6rem; background: #fff; box-shadow: 0 3px 12px #172b4d0d; }
+    .course-image { display: grid; min-height: 175px; place-items: center; padding: 1.5rem; background: linear-gradient(135deg, #dceaff, #b5d2f7); color: #0c326f; text-align: center; }
+    .course-image span { padding: .5rem .75rem; border: 1px dashed #1351b4; border-radius: .3rem; font-size: .85rem; font-weight: 700; }
+    .course-content { padding: 1.25rem; }
+    .course-tag { display: inline-block; padding: .2rem .55rem; border-radius: 2rem; background: #e8f0fe; color: #1351b4; font-size: .75rem; font-weight: 700; }
+    h2 { margin: .7rem 0 .45rem; color: #172b4d; font-size: 1.2rem; }
+    .course-content p { margin: 0 0 1rem; color: #596579; font-size: .92rem; }
+    .course-info { display: flex; flex-wrap: wrap; gap: .5rem 1rem; margin-bottom: 1.1rem; color: #46546a; font-size: .82rem; }
+    .course-link { display: inline-block; padding: .65rem 1rem; border-radius: .25rem; background: #1351b4; color: #fff; font-size: .9rem; font-weight: 700; text-decoration: none; }
+    .course-link:hover { background: #0c326f; }
+    .editor-note { margin-top: 1.5rem; padding: 1rem 1.15rem; border-left: 4px solid #ffcd07; background: #fff8d8; color: #4a4530; font-size: .88rem; }
+    footer { padding: 1.25rem; background: #0c326f; color: #fff; text-align: center; font-size: .85rem; }
+    @media (max-width: 600px) { .nav-container { padding: 0 .35rem; } .nav-container a { padding: .7rem .55rem; font-size: .8rem; } }
+  </style>
+</head>
+<body>
+  <!--div class="gov-bar">GOVERNO FEDERAL — BRASIL</div-->
+  <!--header class="brand">
+    <strong>Ministério das Cidades</strong>
+    <span>Secretaria Nacional de Habitação</span>
+  </header-->
+  <nav aria-label="Navegação do portal"> 
+    <div class="nav-container">
+      <a href="Consulta_Normativos.html">Consulta de Normativos</a>
+      <a href="capacitacoes.html" aria-current="page">Capacitações & EAD (Capacidades)</a>
+      <a href="acervo_multimidia.html">Acervo Multimídia</a>
+    </div>
+  </nav>
+  <main>
+    <section class="intro">
+      <span class="eyebrow">Aprendizagem e desenvolvimento</span>
+      <h1>Capacitações & EAD</h1>
+      <p>Encontre cursos, trilhas de aprendizagem e outras oportunidades de formação relacionadas às políticas habitacionais.</p>
+    </section>
+
+    <section class="course-grid" aria-label="Cursos disponíveis">
+      <!-- Modelo de card: substitua a imagem, o texto, as informações e o endereço do curso. -->
+      <article class="course-card">
+        <div class="course-image" role="img" aria-label="Espaço para imagem do curso"><span>Imagem do curso</span></div>
+        <div class="course-content">
+          <span class="course-tag">EAD · Curso</span>
+          <h2>Título da capacitação</h2>
+          <p>Insira aqui um resumo do curso, seus objetivos e o público a que se destina.</p>
+          <div class="course-info">
+            <span><strong>Carga horária:</strong> informe a duração</span>
+            <span><strong>Público:</strong> informe o público-alvo</span>
+          </div>
+          <a class="course-link" href="https://www.gov.br/cidades/" target="_blank" rel="noopener noreferrer">Acessar capacitação</a>
+        </div>
+      </article>
+      <article class="course-card">
+        <div class="course-image" role="img" aria-label="Espaço para imagem do curso"><span>Imagem do curso</span></div>
+        <div class="course-content">
+          <span class="course-tag">Presencial · Oficina</span>
+          <h2>Título da capacitação</h2>
+          <p>Insira aqui uma breve apresentação do conteúdo e dos resultados esperados para os participantes.</p>
+          <div class="course-info">
+            <span><strong>Formato:</strong> informe o formato</span>
+            <span><strong>Inscrições:</strong> informe o período</span>
+          </div>
+          <a class="course-link" href="https://www.gov.br/cidades/" target="_blank" rel="noopener noreferrer">Saiba mais</a>
+        </div>
+      </article>
+      <article class="course-card">
+        <div class="course-image" role="img" aria-label="Espaço para imagem do curso"><span>Imagem do curso</span></div>
+        <div class="course-content">
+          <span class="course-tag">Trilha de aprendizagem</span>
+          <h2>Título da capacitação</h2>
+          <p>Insira uma descrição objetiva para ajudar o visitante a escolher esta formação.</p>
+          <div class="course-info">
+            <span><strong>Modalidade:</strong> informe a modalidade</span>
+            <span><strong>Certificado:</strong> informe se disponível</span>
+          </div>
+          <a class="course-link" href="https://www.gov.br/cidades/" target="_blank" rel="noopener noreferrer">Acessar capacitação</a>
+        </div>
+      </article>
+    </section>
+
+    <aside class="editor-note"><strong>Para atualizar os cards:</strong> substitua a área “Imagem do curso” por uma imagem, revise os textos e informações e altere o endereço do botão para a página de inscrição ou do curso.</aside>
+  </main>
+  <footer>Secretaria Nacional de Habitação — Ministério das Cidades</footer>
+</body>
+</html>
